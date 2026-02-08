@@ -25,9 +25,11 @@
 	},
 	"hide-files.files": [],
 	"cSpell.words": [
+		"builderman",
 		"Hotbar",
 		"imagebutton",
 		"Keypoint",
+		"Managment",
 		"screengui",
 		"Stackable",
 		"uiaspectratioconstraint",
@@ -38,5 +40,6 @@
 		"uipadding",
 		"uitextsizeconstraint"
 	],
-	"editor.formatOnType": true
+	"editor.formatOnType": true,
+	"luau-lsp.plugin.enabled": true
 }

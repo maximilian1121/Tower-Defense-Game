@@ -37,13 +37,13 @@ export default function Hotbar() {
 					PaddingTop={paddingUDim8}
 				/>
 				<Item itemId="builderman" />
-				<Item itemId="zombob" />
-				<Item itemId="teapotspider" />
-				<Item itemId="baby" />
-				<Item itemId="bubba" />
-				<Item itemId="bubbabig" />
+				<Item itemId="builderman" />
+				<Item itemId="builderman" />
+				<Item itemId="builderman" />
+				<Item itemId="builderman" />
+				<Item itemId="builderman" />
 			</frame>
 			<LevelBar />
-	</React.Fragment>
+		</React.Fragment>
 	);
 }
