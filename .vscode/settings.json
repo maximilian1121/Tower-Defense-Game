@@ -1,0 +1,42 @@
+{
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"files.eol": "\n",
+	"[typescript]": {
+		"editor.defaultFormatter": "dbaeumer.vscode-eslint",
+		"editor.formatOnSave": true
+	},
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "dbaeumer.vscode-eslint",
+		"editor.formatOnSave": true
+	},
+	"eslint.run": "onType",
+	"eslint.format.enable": true,
+	"eslint.useFlatConfig": false,
+	"files.exclude": {
+		"**/.git": true,
+		"**/.svn": true,
+		"**/.hg": true,
+		"**/.DS_Store": true,
+		"**/Thumbs.db": true,
+		"**/flutter/ephemeral": true,
+		"**/Flutter/ephemeral": true,
+		"**/.symlinks": true,
+		"**/.plugin_symlinks": true
+	},
+	"hide-files.files": [],
+	"cSpell.words": [
+		"Hotbar",
+		"imagebutton",
+		"Keypoint",
+		"screengui",
+		"Stackable",
+		"uiaspectratioconstraint",
+		"uicorner",
+		"uiflexitem",
+		"uigradient",
+		"uilistlayout",
+		"uipadding",
+		"uitextsizeconstraint"
+	],
+	"editor.formatOnType": true
+}
