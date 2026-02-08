@@ -1,42 +1,44 @@
 {
-  "name": "@rbxts/td-gaeem",
-  "version": "1.0.0",
-  "description": "",
-  "main": "out/init.lua",
-  "scripts": {
-    "build": "rbxtsc --type game -i include",
-    "watch": "rbxtsc -w --type game -i include",
-    "prepublishOnly": "npm run build"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "types": "out/index.d.ts",
-  "files": [
-    "out",
-    "!**/*.tsbuildinfo"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "devDependencies": {
-    "@rbxts/compiler-types": "^3.0.0-types.0",
-    "@rbxts/types": "^1.0.906",
-    "@typescript-eslint/eslint-plugin": "^8.54.0",
-    "@typescript-eslint/parser": "^8.54.0",
-    "eslint": "^9.39.2",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.5",
-    "eslint-plugin-roblox-ts": "^1.3.1",
-    "prettier": "^3.8.1",
-    "roblox-ts": "^3.0.0",
-    "typescript": "^5.9.3"
-  },
-  "dependencies": {
-    "@rbxts/react": "^17.3.7-ts.1",
-    "@rbxts/react-roblox": "^17.3.7-ts.1",
-    "@rbxts/services": "^1.6.0",
-    "@rbxts/ui-labs": "^2.4.2"
-  }
+	"name": "@rbxts/td-gaeem",
+	"version": "1.0.0",
+	"description": "",
+	"main": "out/init.lua",
+	"scripts": {
+		"build": "rbxtsc --type game -i include",
+		"watch": "rbxtsc -w --type game -i include",
+		"prepublishOnly": "npm run build"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"type": "commonjs",
+	"types": "out/index.d.ts",
+	"files": [
+		"out",
+		"!**/*.tsbuildinfo"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"devDependencies": {
+		"@rbxts/compiler-types": "^3.0.0-types.0",
+		"@rbxts/types": "^1.0.906",
+		"@typescript-eslint/eslint-plugin": "^8.54.0",
+		"@typescript-eslint/parser": "^8.54.0",
+		"eslint": "^9.39.2",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-prettier": "^5.5.5",
+		"eslint-plugin-roblox-ts": "^1.3.1",
+		"prettier": "^3.8.1",
+		"roblox-ts": "^3.0.0",
+		"typescript": "^5.9.3"
+	},
+	"dependencies": {
+		"@rbxts/net": "^3.0.10",
+		"@rbxts/profile-store": "^1.0.3",
+		"@rbxts/react": "^17.3.7-ts.1",
+		"@rbxts/react-roblox": "^17.3.7-ts.1",
+		"@rbxts/services": "^1.6.0",
+		"@rbxts/ui-labs": "^2.4.2"
+	}
 }

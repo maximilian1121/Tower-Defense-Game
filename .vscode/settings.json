@@ -28,6 +28,7 @@
 		"builderman",
 		"Hotbar",
 		"imagebutton",
+		"imagelabel",
 		"Keypoint",
 		"Managment",
 		"screengui",
@@ -38,7 +39,9 @@
 		"uigradient",
 		"uilistlayout",
 		"uipadding",
-		"uitextsizeconstraint"
+		"uistroke",
+		"uitextsizeconstraint",
+		"viewportframe"
 	],
 	"editor.formatOnType": true,
 	"luau-lsp.plugin.enabled": true

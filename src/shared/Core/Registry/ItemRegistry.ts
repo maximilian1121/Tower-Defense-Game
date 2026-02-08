@@ -1,6 +1,17 @@
-import { RunService, ReplicatedStorage } from "@rbxts/services";
+import { getTowerAsset } from "../AssetManagment";
 
-export type ItemBase = {
+export type Rarity =
+    | "Common"
+    | "Uncommon"
+    | "Rare"
+    | "Epic"
+    | "Legendary"
+    | "Mythic"
+    | "Exotic";
+
+export type Buff = "Turbo" | "Burn";
+
+export interface ItemBase {
     Id: string;
     Name: string;
     Description: string;
@@ -9,11 +20,17 @@ export type ItemBase = {
     IsStackable: boolean;
     IsConsumable: boolean;
     Count: number;
-};
+    Rarity: Rarity;
+}
 
 export type TowerItem = ItemBase & {
     Type: "tower";
     Icon: Instance;
+    DMG: number;
+    Range: number;
+    FireRate: number;
+    RangeType: "Line" | "Full";
+    Buffs?: Buff[];
 };
 
 export type CrateItem = ItemBase & {
@@ -23,57 +40,53 @@ export type CrateItem = ItemBase & {
 
 export type Item = TowerItem | CrateItem;
 
-const SyncEvent = ReplicatedStorage.FindFirstChild("RegistrySync") as RemoteEvent
-
-const FetchAllRequest = ReplicatedStorage.FindFirstChild("FetchAllRegistry") as RemoteFunction
-
 export class ItemRegistry {
-    private static items: Map<string, Item> = new Map();
+    private static items = new Map<string, Item>();
 
     public static registerItem(item: Item) {
-        if (!RunService.IsServer()) {
-            warn(`Client cannot register items.`);
-            return;
-        }
-
         if (this.items.has(item.Id)) {
             warn(`Item with ID ${item.Id} is already registered.`);
             return;
         }
 
         this.items.set(item.Id, item);
-        
-        SyncEvent.FireAllClients(item);
     }
 
-    public static getItem(id: string): Item | undefined {
+    public static getItem(
+        id: string,
+    ): Item | TowerItem | CrateItem | undefined {
         return this.items.get(id);
     }
 
     public static getAllItems(): Item[] {
         const itemList: Item[] = [];
-        for (const [_, item] of this.items) {
+        this.items.forEach((item) => {
             itemList.push(item);
-        }
+        });
         return itemList;
     }
+}
 
-    static {
-        if (RunService.IsServer()) {
-            FetchAllRequest.OnServerInvoke = () => {
-                return this.getAllItems();
-            };
-        }
+export default ItemRegistry;
+export function registerItems() {
+    const items: Item[] = [
+        {
+            Id: "builderman",
+            Name: "Builderman",
+            Description: "A powerful builder.",
+            Price: 100,
+            IsStackable: false,
+            IsConsumable: false,
+            Count: 1,
+            Type: "tower",
+            Icon: getTowerAsset("builderman"),
+            Rarity: "Common",
+            DMG: 10,
+            Range: 15,
+            FireRate: 1,
+            RangeType: "Full",
+        },
+    ];
 
-        if (RunService.IsClient()) {
-            const existingItems = FetchAllRequest.InvokeServer() as Item[];
-            for (const item of existingItems) {
-                this.items.set(item.Id, item);
-            }
-
-            SyncEvent.OnClientEvent.Connect((item: Item) => {
-                this.items.set(item.Id, item);
-            });
-        }
-    }
+    items.forEach((item) => ItemRegistry.registerItem(item));
 }
