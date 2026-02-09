@@ -28,7 +28,8 @@ export const Networking = {
         className: T,
     ): InferRemote<T> {
         if (RunService.IsRunning() === false) {
-            error("Cannot get remotes before the game is running.");
+            // create a mock remote for testing in storybook or other environments
+            return new Instance(className) as InferRemote<T>;
         }
         const root = ReplicatedStorage.WaitForChild(ROOT_NAME) as Folder;
 
@@ -55,5 +56,19 @@ export const Networking = {
         }
 
         return remote as InferRemote<T>;
+    },
+};
+
+export const NetworkDefinitions = {
+    Inventory: {
+        GetHotbar: Networking.Get("Inventory", "GetHotbar", "RemoteFunction"),
+    },
+    Stats: {
+        GetLevelData: Networking.Get("Stats", "GetLevelData", "RemoteFunction"),
+        LevelDataChange: Networking.Get(
+            "Stats",
+            "LevelDataChange",
+            "RemoteEvent",
+        ),
     },
 };

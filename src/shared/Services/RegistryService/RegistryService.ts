@@ -1,4 +1,4 @@
-import { getTowerAsset } from "../AssetManagment";
+import { getTowerAsset } from "../AssetService/AssetService";
 
 export type Rarity =
     | "Common"
@@ -65,28 +65,29 @@ export class ItemRegistry {
         });
         return itemList;
     }
+
+    public static registerItems() {
+        const items: Item[] = [
+            {
+                Id: "builderman",
+                Name: "Builderman",
+                Description: "A powerful builder.",
+                Price: 100,
+                IsStackable: false,
+                IsConsumable: false,
+                Count: 1,
+                Type: "tower",
+                Icon: getTowerAsset("builderman"),
+                Rarity: "Common",
+                DMG: 10,
+                Range: 15,
+                FireRate: 1,
+                RangeType: "Full",
+            },
+        ];
+
+        items.forEach((item) => ItemRegistry.registerItem(item));
+    }
 }
 
 export default ItemRegistry;
-export function registerItems() {
-    const items: Item[] = [
-        {
-            Id: "builderman",
-            Name: "Builderman",
-            Description: "A powerful builder.",
-            Price: 100,
-            IsStackable: false,
-            IsConsumable: false,
-            Count: 1,
-            Type: "tower",
-            Icon: getTowerAsset("builderman"),
-            Rarity: "Common",
-            DMG: 10,
-            Range: 15,
-            FireRate: 1,
-            RangeType: "Full",
-        },
-    ];
-
-    items.forEach((item) => ItemRegistry.registerItem(item));
-}

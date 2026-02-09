@@ -1,48 +1,55 @@
 {
-	"typescript.tsdk": "node_modules/typescript/lib",
-	"files.eol": "\n",
-	"[typescript]": {
-		"editor.defaultFormatter": "dbaeumer.vscode-eslint",
-		"editor.formatOnSave": true
-	},
-	"[typescriptreact]": {
-		"editor.defaultFormatter": "dbaeumer.vscode-eslint",
-		"editor.formatOnSave": true
-	},
-	"eslint.run": "onType",
-	"eslint.format.enable": true,
-	"eslint.useFlatConfig": false,
-	"files.exclude": {
-		"**/.git": true,
-		"**/.svn": true,
-		"**/.hg": true,
-		"**/.DS_Store": true,
-		"**/Thumbs.db": true,
-		"**/flutter/ephemeral": true,
-		"**/Flutter/ephemeral": true,
-		"**/.symlinks": true,
-		"**/.plugin_symlinks": true
-	},
-	"hide-files.files": [],
-	"cSpell.words": [
-		"builderman",
-		"Hotbar",
-		"imagebutton",
-		"imagelabel",
-		"Keypoint",
-		"Managment",
-		"screengui",
-		"Stackable",
-		"uiaspectratioconstraint",
-		"uicorner",
-		"uiflexitem",
-		"uigradient",
-		"uilistlayout",
-		"uipadding",
-		"uistroke",
-		"uitextsizeconstraint",
-		"viewportframe"
-	],
-	"editor.formatOnType": true,
-	"luau-lsp.plugin.enabled": true
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "files.eol": "\n",
+    "[typescript]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+        "editor.formatOnSave": true
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+        "editor.formatOnSave": true
+    },
+    "eslint.run": "onType",
+    "eslint.format.enable": true,
+    "eslint.useFlatConfig": false,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/flutter/ephemeral": true,
+        "**/Flutter/ephemeral": true,
+        "**/.symlinks": true,
+        "**/.plugin_symlinks": true,
+        "node_modules": true,
+        "out": true,
+        "include": true,
+        ".vscode": true
+    },
+    "hide-files.files": ["node_modules", "out", "include", ".vscode"],
+    "cSpell.words": [
+        "builderman",
+        "Hotbar",
+        "imagebutton",
+        "imagelabel",
+        "Keypoint",
+        "Managment",
+        "rbxasset",
+        "screengui",
+        "Stackable",
+        "uiaspectratioconstraint",
+        "uicorner",
+        "uiflexitem",
+        "uigradient",
+        "uilistlayout",
+        "uipadding",
+        "uistroke",
+        "uitextsizeconstraint",
+        "viewportframe"
+    ],
+    "editor.formatOnType": true,
+    "luau-lsp.plugin.enabled": true,
+    "typescript.validate.enable": true,
+    "typescript.tsserver.experimental.enableProjectDiagnostics": true
 }

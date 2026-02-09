@@ -5,14 +5,22 @@ import React, {
     useRef,
     useState,
 } from "@rbxts/react";
-import { Item, ItemRegistry } from "shared/Core/Registry/ItemRegistry";
 import { FULL_SIZE, STUDS, WHITE } from "shared/UI/Constants";
 import { useSnackbar } from "../toasting/snackbar";
 import { RunService } from "@rbxts/services";
-import { getTextureAsset } from "shared/Core/AssetManagment";
+import { useSpring } from "@rbxts/react-spring";
+import ItemRegistry, {
+    Item,
+} from "shared/Services/RegistryService/RegistryService";
+import {
+    getSoundAsset,
+    getTextureAsset,
+} from "shared/Services/AssetService/AssetService";
 
 type Props = {
     itemId?: string | undefined;
+    onPress?: () => void;
+    doGrowAnimation?: boolean;
 };
 
 const rarityColors: Record<Item["Rarity"], Color3> = {
@@ -25,11 +33,14 @@ const rarityColors: Record<Item["Rarity"], Color3> = {
     Exotic: new Color3(1, 0.75, 0.75),
 };
 
-const generateGradientForRarity = (rarity: Item["Rarity"]): ColorSequence => {
+export const generateGradientForRarity = (
+    rarity: Item["Rarity"],
+    sections: number = 4,
+): ColorSequence => {
     const baseColor = rarityColors[rarity] || rarityColors.Common;
 
     if (rarity === "Exotic") {
-        const NUM_KEYPOINTS = 4;
+        const NUM_KEYPOINTS = sections;
         const keypoints: ColorSequenceKeypoint[] = [];
 
         for (let i = 0; i < NUM_KEYPOINTS; i++) {
@@ -57,17 +68,21 @@ const generateGradientForRarity = (rarity: Item["Rarity"]): ColorSequence => {
     ]);
 };
 
-export default function Item({ itemId }: Props) {
+export default function Item({ itemId, onPress, doGrowAnimation }: Props) {
     const enqueueSnackbar = useSnackbar();
     const itemInformation = ItemRegistry.getItem(itemId ?? "");
 
+    doGrowAnimation = doGrowAnimation ?? false;
+
     const viewportRef = useRef<ViewportFrame>(undefined);
     const cameraRef = useRef<Camera>(undefined);
+    const buttonRef = useRef<ImageButton>(undefined);
 
     const [rarityGradient, setRarityGradient] = useState<ColorSequence>(
         generateGradientForRarity("Common"),
     );
     const [rotation, setRotation] = useBinding(0);
+    const [guiState, setGuiState] = useState<Enum.GuiState>(Enum.GuiState.Idle);
 
     useEffect(() => {
         if (itemInformation) {
@@ -119,11 +134,34 @@ export default function Item({ itemId }: Props) {
         }
     }, [itemInformation]);
 
+    useEffect(() => {
+        let connection: RBXScriptConnection;
+        if (buttonRef.current) {
+            connection = buttonRef.current
+                .GetPropertyChangedSignal("GuiState")
+                .Connect(() => {
+                    setGuiState(
+                        buttonRef.current?.GuiState || Enum.GuiState.Idle,
+                    );
+                });
+        }
+
+        return () => {
+            if (connection !== undefined) {
+                connection.Disconnect();
+            }
+        };
+    }, [buttonRef]);
+
     if (!itemInformation) {
-        warn(`Item with ID ${itemId} not found in registry.`);
-        enqueueSnackbar(`Item with ID ${itemId} not found in registry.`, {
-            variant: "warning",
-        });
+        if (itemId !== undefined) {
+            warn(`Item with ID ${itemId} not found in registry.`);
+            enqueueSnackbar(`Item with ID ${itemId} not found in registry.`, {
+                variant: "warning",
+            });
+        } else {
+            // Do nothing because it just means that this slot is empty and that's fine
+        }
     }
 
     let buffRenderer = undefined;
@@ -166,13 +204,43 @@ export default function Item({ itemId }: Props) {
         );
     }
 
+    function getSizeForState() {
+        if (guiState === Enum.GuiState.Hover) {
+            return UDim2.fromScale(1.15, 1.15);
+        } else if (guiState === Enum.GuiState.Press) {
+            return UDim2.fromScale(0.95, 0.95);
+        }
+        return UDim2.fromScale(1, 1);
+    }
+
+    function getConfigForState() {
+        if (guiState === Enum.GuiState.Press) {
+            return { tension: 1500, friction: 40 };
+        }
+        return { tension: 250, friction: 30 };
+    }
+
+    const styles = useSpring({
+        size: doGrowAnimation ? getSizeForState() : UDim2.fromScale(1, 1),
+        config: getConfigForState(),
+    });
+
     return (
         <imagebutton
-            Size={UDim2.fromScale(1, 1)}
+            Size={styles.size}
             Image={STUDS}
+            ref={buttonRef}
             BackgroundColor3={new Color3(0.24, 0.24, 0.24)}
             Event={{
-                Activated: () => enqueueSnackbar(`Item clicked: ${itemId}`),
+                Activated: () => {
+                    if (onPress) {
+                        onPress();
+                    }
+                    getSoundAsset("GUI_SELECT")?.PlayGlobal();
+                },
+                MouseEnter: () => {
+                    getSoundAsset("GUI_HOVER")?.PlayGlobal();
+                },
             }}
             AutoButtonColor={false}
         >
@@ -180,7 +248,8 @@ export default function Item({ itemId }: Props) {
             <uiaspectratioconstraint />
             <uistroke
                 Color={WHITE}
-                Thickness={5}
+                Thickness={0.05}
+                StrokeSizingMode={"ScaledSize"}
                 BorderStrokePosition={"Center"}
             >
                 <uigradient Color={rarityGradient} Rotation={rotation} />

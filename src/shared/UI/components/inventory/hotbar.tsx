@@ -1,23 +1,28 @@
 import React, { useEffect } from "@rbxts/react";
 import LevelBar from "./levelbar";
 import Item from "../shared/item";
-import { EMPTY_HOTBAR, Hotbar, HotbarSlot } from "shared/Core/TYPES";
-import { Networking } from "shared/Core/Networking";
+import { RunService } from "@rbxts/services";
+import { AppStoryControls } from "shared/UI/App";
+import { EMPTY_HOTBAR, Hotbar, HotbarSlot } from "shared/UTILS";
+import { NetworkDefinitions } from "shared/Services/NetworkingService/NetworkingService";
 
 const paddingUDim8 = new UDim(0, 8);
 
-export default function Hotbar() {
+type props = {
+    storyBookControls?: AppStoryControls;
+};
+
+export default function Hotbar({ storyBookControls }: props) {
     const [hotbarData, setHotbarData] = React.useState<Hotbar | undefined>(
         EMPTY_HOTBAR,
     );
 
     useEffect(() => {
+        if (!RunService.IsRunning()) {
+            return; // Make it so that storybooks don't break
+        }
         const fetchHotbar = async () => {
-            const hotbarRemote = Networking.Get(
-                "Inventory",
-                "GetHotbar",
-                "RemoteFunction",
-            );
+            const hotbarRemote = NetworkDefinitions.Inventory.GetHotbar;
             const data = await hotbarRemote.InvokeServer();
             setHotbarData(data);
         };
@@ -64,10 +69,14 @@ export default function Hotbar() {
                     <Item
                         key={e}
                         itemId={hotbarData?.[`slot${e}` as HotbarSlot]}
+                        onPress={() => {
+                            print(`Pressed ${e}`);
+                        }}
+                        doGrowAnimation={true}
                     />
                 ))}
             </frame>
-            <LevelBar />
+            <LevelBar storyBookControls={storyBookControls} />
         </React.Fragment>
     );
 }
