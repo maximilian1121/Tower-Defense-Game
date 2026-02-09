@@ -2,7 +2,7 @@ import ReactRoblox from "@rbxts/react-roblox";
 import { Players } from "@rbxts/services";
 import App from "../shared/UI/App";
 import React from "@rbxts/react";
-import ItemRegistry from "shared/Services/RegistryService/RegistryService";
+import ItemRegistry from "shared/Services/RegistryService/ItemRegistry";
 
 const player = Players.LocalPlayer;
 const playerGui = player.WaitForChild("PlayerGui") as PlayerGui;

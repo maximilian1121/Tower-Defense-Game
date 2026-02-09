@@ -11,7 +11,7 @@ import { RunService } from "@rbxts/services";
 import { useSpring } from "@rbxts/react-spring";
 import ItemRegistry, {
     Item,
-} from "shared/Services/RegistryService/RegistryService";
+} from "shared/Services/RegistryService/ItemRegistry";
 import {
     getSoundAsset,
     getTextureAsset,
