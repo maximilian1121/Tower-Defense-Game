@@ -1,6 +1,6 @@
 import { ReplicatedStorage } from "@rbxts/services";
 
-type AssetCategory = "tower" | "enemy" | "texture" | "sound";
+type AssetCategory = "tower" | "enemy" | "texture" | "sound" | "map";
 
 const AssetFolder = ReplicatedStorage.WaitForChild("Assets");
 
@@ -26,6 +26,10 @@ function getAsset(category: AssetCategory, name: string) {
 
 export function getTowerAsset(name: string): Model {
     return getAsset("tower", name) as Model;
+}
+
+export function geMapAsset(name: string): Model {
+    return getAsset("map", name) as Model;
 }
 
 export function getTextureAsset(name: string): string | undefined {

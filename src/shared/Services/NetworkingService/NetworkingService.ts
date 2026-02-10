@@ -71,4 +71,11 @@ export const NetworkDefinitions = {
             "RemoteEvent",
         ),
     },
+    CrossPlaceService: {
+        GetCurrentLocation: Networking.Get(
+            "CrossPlaceService",
+            "GetCurrentLocation",
+            "RemoteFunction",
+        ),
+    },
 };

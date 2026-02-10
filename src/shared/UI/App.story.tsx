@@ -3,9 +3,9 @@ import ReactRoblox from "@rbxts/react-roblox";
 import App, { AppStoryControls } from "./App";
 import { StoryControls } from "@rbxts/ui-labs/src/Typing/Typing";
 import { Number } from "@rbxts/ui-labs";
-import ItemRegistry from "shared/Services/RegistryService/ItemRegistry";
+import RegistryService from "shared/Services/RegistryService/RegistryService";
 
-ItemRegistry.registerItems();
+RegistryService.RegisterAll();
 
 const story = {
     react: React,

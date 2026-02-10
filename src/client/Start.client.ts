@@ -2,12 +2,12 @@ import ReactRoblox from "@rbxts/react-roblox";
 import { Players } from "@rbxts/services";
 import App from "../shared/UI/App";
 import React from "@rbxts/react";
-import ItemRegistry from "shared/Services/RegistryService/ItemRegistry";
+import RegistryService from "shared/Services/RegistryService/RegistryService";
 
 const player = Players.LocalPlayer;
 const playerGui = player.WaitForChild("PlayerGui") as PlayerGui;
 
-ItemRegistry.registerItems();
+RegistryService.RegisterAll();
 
 const GUI = new Instance("ScreenGui");
 GUI.Parent = playerGui;

@@ -47,7 +47,7 @@ export default function Hotbar({ storyBookControls }: props) {
             <uilistlayout
                 VerticalAlignment={Enum.VerticalAlignment.Bottom}
                 HorizontalAlignment={Enum.HorizontalAlignment.Center}
-                Padding={new UDim(0, 8)}
+                Padding={new UDim(0, 12)}
             />
             <frame
                 Size={UDim2.fromScale(0.5, 0.15)}
@@ -59,7 +59,7 @@ export default function Hotbar({ storyBookControls }: props) {
                     VerticalAlignment={Enum.VerticalAlignment.Center}
                     HorizontalAlignment={Enum.HorizontalAlignment.Center}
                     FillDirection={Enum.FillDirection.Horizontal}
-                    Padding={new UDim(0, 16)}
+                    Padding={new UDim(0.03333, 0)}
                 />
                 <uipadding
                     PaddingBottom={paddingUDim8}

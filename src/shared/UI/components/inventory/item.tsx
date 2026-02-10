@@ -304,6 +304,23 @@ export default function Item({ itemId, onPress, inHotbar }: Props) {
                     </viewportframe>
                 )}
             </imagelabel>
+            {inHotbar && (
+                <imagelabel
+                    Image={getTextureAsset("GLOW_BLUR")}
+                    Size={UDim2.fromScale(1.4, 1.4)}
+                    BackgroundTransparency={1}
+                    ZIndex={-1}
+                    AnchorPoint={new Vector2(0.5, 0.5)}
+                    Position={UDim2.fromScale(0.5, 0.5)}
+                >
+                    <uigradient
+                        Color={generateGradientForRarity(
+                            itemInformation?.Rarity,
+                        )}
+                        Rotation={rotation}
+                    />
+                </imagelabel>
+            )}
         </imagebutton>
     );
 }

@@ -1,5 +1,6 @@
-import React, { useBinding, useEffect } from "@rbxts/react";
+import React, { useBinding, useEffect, useRef } from "@rbxts/react";
 import { RunService } from "@rbxts/services";
+import { FULL_SIZE, WHITE } from "shared/UI/Constants";
 
 type ToolTipBaseProps = {
     children?: React.ReactNode;
@@ -19,14 +20,16 @@ export default function ToolTipBase({
     size = UDim2.fromScale(0.25, 1),
 }: ToolTipBaseProps) {
     const [rot, setRot] = useBinding(0);
+    const tooltipRef = useRef<Frame>();
 
     useEffect(() => {
         const conn = RunService.RenderStepped.Connect((dt) => {
-            setRot((rot.getValue() + 120 * dt) % 360);
+            const newRot = (rot.getValue() + 120 * dt) % 360;
+            setRot(newRot);
         });
 
         return () => conn.Disconnect();
-    });
+    }, []);
 
     return (
         <frame
@@ -35,42 +38,58 @@ export default function ToolTipBase({
             Size={size}
             Visible={visible}
             BorderSizePixel={0}
-            ClipsDescendants={true}
+            BackgroundTransparency={1}
+            ref={tooltipRef}
         >
-            <uigradient
-                Color={
-                    new ColorSequence([
-                        new ColorSequenceKeypoint(0, new Color3(1, 0.25, 0.25)),
-                        new ColorSequenceKeypoint(
-                            0.5,
-                            new Color3(1, 0.25, 0.25),
-                        ),
-                        new ColorSequenceKeypoint(1, new Color3(0.81, 0, 0)),
-                    ])
-                }
-                Rotation={90}
-            />
+            <uicorner />
             <uiaspectratioconstraint AspectRatio={aspectRatio} />
-            <uistroke
-                Thickness={5}
-                Color={new Color3(0.8, 0.8, 0.8)}
-                BorderStrokePosition={"Center"}
-            >
+
+            <frame Size={FULL_SIZE} BackgroundColor3={WHITE}>
+                <uicorner />
                 <uigradient
                     Color={
                         new ColorSequence([
-                            new ColorSequenceKeypoint(0, new Color3(1, 0, 0)),
+                            new ColorSequenceKeypoint(
+                                0,
+                                new Color3(1, 0.25, 0.25),
+                            ),
+                            new ColorSequenceKeypoint(
+                                0.5,
+                                new Color3(1, 0.25, 0.25),
+                            ),
                             new ColorSequenceKeypoint(
                                 1,
-                                new Color3(0.72, 0, 0),
+                                new Color3(0.81, 0, 0),
                             ),
                         ])
                     }
-                    Rotation={rot}
+                    Rotation={90}
                 />
-            </uistroke>
-            <uicorner />
-            {children}
+
+                <uistroke
+                    Thickness={5}
+                    Color={new Color3(0.8, 0.8, 0.8)}
+                    BorderStrokePosition={"Center"}
+                    ZIndex={5}
+                >
+                    <uigradient
+                        Color={
+                            new ColorSequence([
+                                new ColorSequenceKeypoint(
+                                    0,
+                                    new Color3(1, 0, 0),
+                                ),
+                                new ColorSequenceKeypoint(
+                                    1,
+                                    new Color3(0.72, 0, 0),
+                                ),
+                            ])
+                        }
+                        Rotation={rot}
+                    />
+                </uistroke>
+                {children}
+            </frame>
         </frame>
     );
 }

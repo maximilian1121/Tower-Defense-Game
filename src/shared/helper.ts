@@ -64,7 +64,7 @@ export const rarityColors: Record<Item["Rarity"], Color3> = {
     Uncommon: new Color3(0.12, 1, 0.12),
     Rare: new Color3(0.12, 0.75, 1),
     Epic: new Color3(0.75, 0.12, 1),
-    Legendary: new Color3(1, 0.59, 0.12),
+    Legendary: new Color3(1, 0.53, 0),
     Mythic: new Color3(1, 0.97, 0.12),
     Exotic: new Color3(0, 0, 0),
 };
@@ -107,4 +107,23 @@ export const generateGradientForRarity = (
         new ColorSequenceKeypoint(0, baseColor),
         new ColorSequenceKeypoint(1, darkerColor),
     ]);
+};
+
+export const addCommasToNumber = (value: number | string): string => {
+    let str = tostring(value);
+
+    let decimal = "";
+    const [dotIndex] = string.find(str, "%.");
+    if (dotIndex !== undefined) {
+        decimal = string.sub(str, dotIndex);
+        str = string.sub(str, 1, dotIndex - 1);
+    }
+
+    while (true) {
+        const [replaced] = string.gsub(str, "^(-?%d+)(%d%d%d)", "%1,%2");
+        if (replaced === str) break;
+        str = replaced;
+    }
+
+    return str + decimal;
 };

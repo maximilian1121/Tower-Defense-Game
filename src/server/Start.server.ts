@@ -2,15 +2,15 @@ import ProfileStore from "@rbxts/profile-store";
 import { Players, ReplicatedStorage, RunService } from "@rbxts/services";
 import { PROFILE_TEMPLATE } from "shared/helper";
 import { Networking } from "shared/Services/NetworkingService/NetworkingService";
-import ItemRegistry from "shared/Services/RegistryService/ItemRegistry";
 import { DataServiceServer } from "./Services/DataService/DataServiceServer";
+import RegistryService from "shared/Services/RegistryService/RegistryService";
 
 function getStoreName(): string {
     return RunService.IsStudio() ? "PlayerStoreDev" : "PlayerStore";
 }
 
 Networking.Init();
-ItemRegistry.registerItems();
+RegistryService.RegisterAll();
 DataServiceServer.Init();
 
 const PlayerStore = ProfileStore.New(getStoreName(), PROFILE_TEMPLATE);
