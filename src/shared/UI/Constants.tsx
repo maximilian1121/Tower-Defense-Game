@@ -1,6 +1,7 @@
 export const FULL_SIZE = UDim2.fromScale(1, 1);
 export const WHITE = new Color3(1, 1, 1);
 export const STUDS = "rbxassetid://6927295847";
+export const STUDS_TILE_SIZE = UDim2.fromOffset(128, 128);
 
 export function GetFont(
     weight?: Enum.FontWeight,

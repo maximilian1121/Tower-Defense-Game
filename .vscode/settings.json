@@ -23,11 +23,10 @@
         "**/.symlinks": true,
         "**/.plugin_symlinks": true,
         "node_modules": true,
-        "out": true,
         "include": true,
         ".vscode": true
     },
-    "hide-files.files": ["node_modules", "out", "include", ".vscode"],
+    "hide-files.files": ["node_modules", "include", ".vscode"],
     "cSpell.words": [
         "builderman",
         "Hotbar",
@@ -36,6 +35,7 @@
         "Keypoint",
         "Managment",
         "rbxasset",
+        "rbxassetid",
         "screengui",
         "Stackable",
         "uiaspectratioconstraint",

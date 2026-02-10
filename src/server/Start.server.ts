@@ -1,6 +1,6 @@
 import ProfileStore from "@rbxts/profile-store";
 import { Players, ReplicatedStorage, RunService } from "@rbxts/services";
-import { PROFILE_TEMPLATE } from "shared/UTILS";
+import { PROFILE_TEMPLATE } from "shared/helper";
 import { Networking } from "shared/Services/NetworkingService/NetworkingService";
 import ItemRegistry from "shared/Services/RegistryService/ItemRegistry";
 import { DataServiceServer } from "./Services/DataService/DataServiceServer";

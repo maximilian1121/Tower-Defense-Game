@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "@rbxts/react";
-import SnackbarProvider from "./components/toasting/snackbar";
+import SnackbarProvider from "./components/snackbar";
 import Hotbar from "./components/inventory/hotbar";
 import { FULL_SIZE, GetFont } from "./Constants";
 import {

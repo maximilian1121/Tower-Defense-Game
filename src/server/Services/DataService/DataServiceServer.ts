@@ -1,7 +1,7 @@
 import { Profile } from "@rbxts/profile-store";
 import { Players } from "@rbxts/services";
 import { NetworkDefinitions } from "shared/Services/NetworkingService/NetworkingService";
-import { PROFILE_TEMPLATE, ProfileData } from "shared/UTILS";
+import { PROFILE_TEMPLATE, ProfileData } from "shared/helper";
 
 export class DataServiceServer {
     public static Profiles: Record<number, Profile<ProfileData> | undefined> =

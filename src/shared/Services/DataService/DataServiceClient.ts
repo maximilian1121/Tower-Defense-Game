@@ -1,5 +1,5 @@
+import { Hotbar, LevelData } from "shared/helper";
 import { NetworkDefinitions } from "../NetworkingService/NetworkingService";
-import { Hotbar, LevelData } from "shared/UTILS";
 
 export const DataServiceClient = {
     GetHotbar(): Hotbar | undefined {

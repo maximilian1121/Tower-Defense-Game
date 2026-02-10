@@ -5,8 +5,8 @@ import React, {
     useRef,
     useState,
 } from "@rbxts/react";
-import { FULL_SIZE, STUDS, WHITE } from "shared/UI/Constants";
-import { useSnackbar } from "../toasting/snackbar";
+import { FULL_SIZE, GetFont, STUDS, WHITE } from "shared/UI/Constants";
+import { useSnackbar } from "../snackbar";
 import { RunService } from "@rbxts/services";
 import { useSpring } from "@rbxts/react-spring";
 import ItemRegistry, {
@@ -16,63 +16,24 @@ import {
     getSoundAsset,
     getTextureAsset,
 } from "shared/Services/AssetService/AssetService";
+import HotbarTowerTooltip from "../tooltips/HotbarTowerTooltip";
+import {
+    darkenColor3,
+    generateGradientForRarity,
+    rarityColors,
+} from "shared/helper";
 
 type Props = {
     itemId?: string | undefined;
     onPress?: () => void;
-    doGrowAnimation?: boolean;
+    inHotbar?: boolean;
 };
 
-const rarityColors: Record<Item["Rarity"], Color3> = {
-    Common: new Color3(0.41, 0.41, 0.41),
-    Uncommon: new Color3(0.12, 1, 0.12),
-    Rare: new Color3(0.12, 0.75, 1),
-    Epic: new Color3(0.75, 0.12, 1),
-    Legendary: new Color3(1, 0.59, 0.12),
-    Mythic: new Color3(1, 0.97, 0.12),
-    Exotic: new Color3(1, 0.75, 0.75),
-};
-
-export const generateGradientForRarity = (
-    rarity: Item["Rarity"],
-    sections: number = 4,
-): ColorSequence => {
-    const baseColor = rarityColors[rarity] || rarityColors.Common;
-
-    if (rarity === "Exotic") {
-        const NUM_KEYPOINTS = sections;
-        const keypoints: ColorSequenceKeypoint[] = [];
-
-        for (let i = 0; i < NUM_KEYPOINTS; i++) {
-            const progress = i / (NUM_KEYPOINTS - 1);
-
-            const color = Color3.fromHSV(progress, 0.5, 1);
-
-            keypoints.push(new ColorSequenceKeypoint(progress, color));
-        }
-
-        return new ColorSequence(keypoints);
-    }
-
-    const percent = 0.5;
-
-    const darkerColor = new Color3(
-        baseColor.R * percent,
-        baseColor.G * percent,
-        baseColor.B * percent,
-    );
-
-    return new ColorSequence([
-        new ColorSequenceKeypoint(0, baseColor),
-        new ColorSequenceKeypoint(1, darkerColor),
-    ]);
-};
-
-export default function Item({ itemId, onPress, doGrowAnimation }: Props) {
+export default function Item({ itemId, onPress, inHotbar }: Props) {
     const enqueueSnackbar = useSnackbar();
     const itemInformation = ItemRegistry.getItem(itemId ?? "");
 
-    doGrowAnimation = doGrowAnimation ?? false;
+    inHotbar = inHotbar ?? false;
 
     const viewportRef = useRef<ViewportFrame>(undefined);
     const cameraRef = useRef<Camera>(undefined);
@@ -165,9 +126,52 @@ export default function Item({ itemId, onPress, doGrowAnimation }: Props) {
     }
 
     let buffRenderer = undefined;
+    let costRender = undefined;
 
     if (itemInformation && itemInformation.Type === "tower") {
         const buffs = itemInformation.Buffs || [];
+
+        costRender = (
+            <frame
+                Size={UDim2.fromScale(0, 0.4)}
+                BackgroundTransparency={1}
+                AnchorPoint={new Vector2(0.5, 1)}
+                Position={UDim2.fromScale(0.5, 1)}
+                AutomaticSize={"X"}
+            >
+                <uilistlayout
+                    FillDirection={"Horizontal"}
+                    VerticalAlignment={"Center"}
+                    HorizontalAlignment={"Left"}
+                    Padding={new UDim(0, 4)}
+                />
+                <imagelabel
+                    Image={getTextureAsset("COINS")}
+                    Size={UDim2.fromScale(1, 1)}
+                    BackgroundTransparency={1}
+                >
+                    <uiaspectratioconstraint />
+                </imagelabel>
+                <textlabel
+                    FontFace={GetFont()}
+                    TextScaled={true}
+                    Size={UDim2.fromScale(0, 1)}
+                    AutomaticSize={"X"}
+                    BackgroundTransparency={1}
+                    TextColor3={rarityColors.Legendary}
+                    Text={`${itemInformation.Price}`}
+                    TextXAlignment={"Left"}
+                >
+                    {/* <uiflexitem FlexMode={"Fill"} /> */}
+                    <uistroke
+                        Thickness={3}
+                        Color={darkenColor3(rarityColors.Legendary, 0.5)}
+                        BorderStrokePosition={"Center"}
+                    />
+                    <uitextsizeconstraint MinTextSize={12} MaxTextSize={64} />
+                </textlabel>
+            </frame>
+        );
 
         buffRenderer = (
             <frame
@@ -215,22 +219,21 @@ export default function Item({ itemId, onPress, doGrowAnimation }: Props) {
 
     function getConfigForState() {
         if (guiState === Enum.GuiState.Press) {
-            return { tension: 1500, friction: 40 };
+            return { tension: 2000, friction: 40 };
         }
-        return { tension: 250, friction: 30 };
+        return { tension: 500, friction: 15 };
     }
 
     const styles = useSpring({
-        size: doGrowAnimation ? getSizeForState() : UDim2.fromScale(1, 1),
+        size: inHotbar ? getSizeForState() : UDim2.fromScale(1, 1),
         config: getConfigForState(),
     });
 
     return (
         <imagebutton
             Size={styles.size}
-            Image={STUDS}
             ref={buttonRef}
-            BackgroundColor3={new Color3(0.24, 0.24, 0.24)}
+            BackgroundTransparency={1}
             Event={{
                 Activated: () => {
                     if (onPress) {
@@ -244,44 +247,63 @@ export default function Item({ itemId, onPress, doGrowAnimation }: Props) {
             }}
             AutoButtonColor={false}
         >
-            <uicorner CornerRadius={new UDim(0, 8)} />
             <uiaspectratioconstraint />
-            <uistroke
-                Color={WHITE}
-                Thickness={0.05}
-                StrokeSizingMode={"ScaledSize"}
-                BorderStrokePosition={"Center"}
+            <imagelabel
+                Size={FULL_SIZE}
+                BackgroundColor3={new Color3(0.24, 0.24, 0.24)}
+                Image={STUDS}
             >
+                {itemInformation?.Type === "tower" && (
+                    <screengui>
+                        <HotbarTowerTooltip
+                            towerId={itemInformation.Id}
+                            visible={
+                                guiState === Enum.GuiState.Hover ||
+                                guiState === Enum.GuiState.Press
+                            }
+                            slot={buttonRef}
+                        />
+                    </screengui>
+                )}
+                <uicorner CornerRadius={new UDim(0, 8)} />
+                <uistroke
+                    Color={WHITE}
+                    Thickness={0.05}
+                    StrokeSizingMode={"ScaledSize"}
+                    BorderStrokePosition={"Center"}
+                >
+                    <uigradient Color={rarityGradient} Rotation={rotation} />
+                </uistroke>
                 <uigradient Color={rarityGradient} Rotation={rotation} />
-            </uistroke>
-            <uigradient Color={rarityGradient} Rotation={rotation} />
 
-            {typeIs(itemInformation?.Icon, "string") ? (
-                <imagelabel
-                    key="IconImage"
-                    Size={UDim2.fromScale(0.95, 0.95)}
-                    Position={UDim2.fromScale(0.5, 0.5)}
-                    AnchorPoint={new Vector2(0.5, 0.5)}
-                    Image={itemInformation?.Icon ?? ""}
-                    BackgroundTransparency={1}
-                >
-                    <uicorner CornerRadius={new UDim(0, 8)} />
-                    {buffRenderer}
-                </imagelabel>
-            ) : (
-                <viewportframe
-                    key="IconViewport"
-                    ref={viewportRef}
-                    Size={UDim2.fromScale(0.95, 0.95)}
-                    Position={UDim2.fromScale(0.5, 0.5)}
-                    AnchorPoint={new Vector2(0.5, 0.5)}
-                    BackgroundTransparency={1}
-                >
-                    <uicorner CornerRadius={new UDim(0, 8)} />
-                    <camera ref={cameraRef} FieldOfView={70} />
-                    {buffRenderer}
-                </viewportframe>
-            )}
+                {typeIs(itemInformation?.Icon, "string") ? (
+                    <imagelabel
+                        key="IconImage"
+                        Size={UDim2.fromScale(0.95, 0.95)}
+                        Position={UDim2.fromScale(0.5, 0.5)}
+                        AnchorPoint={new Vector2(0.5, 0.5)}
+                        Image={itemInformation?.Icon ?? ""}
+                        BackgroundTransparency={1}
+                    >
+                        <uicorner CornerRadius={new UDim(0, 8)} />
+                        {buffRenderer}
+                    </imagelabel>
+                ) : (
+                    <viewportframe
+                        key="IconViewport"
+                        ref={viewportRef}
+                        Size={UDim2.fromScale(0.95, 0.95)}
+                        Position={UDim2.fromScale(0.5, 0.5)}
+                        AnchorPoint={new Vector2(0.5, 0.5)}
+                        BackgroundTransparency={1}
+                    >
+                        <uicorner CornerRadius={new UDim(0, 8)} />
+                        <camera ref={cameraRef} FieldOfView={70} />
+                        {buffRenderer}
+                        {costRender}
+                    </viewportframe>
+                )}
+            </imagelabel>
         </imagebutton>
     );
 }

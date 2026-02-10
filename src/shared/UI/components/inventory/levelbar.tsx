@@ -4,8 +4,8 @@ import { Text } from "../shared/Text";
 import { RunService } from "@rbxts/services";
 import { useSpring } from "@rbxts/react-spring";
 import { AppStoryControls } from "shared/UI/App";
-import { LEVEL_DATA_TEMPLATE, LevelData } from "shared/UTILS";
 import { DataServiceClient } from "shared/Services/DataService/DataServiceClient";
+import { LEVEL_DATA_TEMPLATE, LevelData } from "shared/helper";
 
 type props = {
     storyBookControls?: AppStoryControls;

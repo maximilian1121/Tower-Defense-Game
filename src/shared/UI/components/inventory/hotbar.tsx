@@ -1,9 +1,9 @@
 import React, { useEffect } from "@rbxts/react";
 import LevelBar from "./levelbar";
-import Item from "../shared/item";
+import Item from "./item";
 import { RunService } from "@rbxts/services";
 import { AppStoryControls } from "shared/UI/App";
-import { EMPTY_HOTBAR, Hotbar, HotbarSlot } from "shared/UTILS";
+import { EMPTY_HOTBAR, Hotbar, HotbarSlot, STUDIO_HOTBAR } from "shared/helper";
 import { NetworkDefinitions } from "shared/Services/NetworkingService/NetworkingService";
 
 const paddingUDim8 = new UDim(0, 8);
@@ -19,6 +19,8 @@ export default function Hotbar({ storyBookControls }: props) {
 
     useEffect(() => {
         if (!RunService.IsRunning()) {
+            print(STUDIO_HOTBAR);
+            setHotbarData(STUDIO_HOTBAR);
             return; // Make it so that storybooks don't break
         }
         const fetchHotbar = async () => {
@@ -57,7 +59,7 @@ export default function Hotbar({ storyBookControls }: props) {
                     VerticalAlignment={Enum.VerticalAlignment.Center}
                     HorizontalAlignment={Enum.HorizontalAlignment.Center}
                     FillDirection={Enum.FillDirection.Horizontal}
-                    Padding={paddingUDim8}
+                    Padding={new UDim(0, 16)}
                 />
                 <uipadding
                     PaddingBottom={paddingUDim8}
@@ -72,7 +74,7 @@ export default function Hotbar({ storyBookControls }: props) {
                         onPress={() => {
                             print(`Pressed ${e}`);
                         }}
-                        doGrowAnimation={true}
+                        inHotbar={true}
                     />
                 ))}
             </frame>

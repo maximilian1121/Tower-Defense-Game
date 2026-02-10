@@ -1,4 +1,6 @@
+import { RunService } from "@rbxts/services";
 import { getTowerAsset } from "../AssetService/AssetService";
+import { items } from "./Items";
 
 export type Rarity =
     | "Common"
@@ -67,9 +69,44 @@ export class ItemRegistry {
     }
 
     public static registerItems() {
-        const items: Item[] = [
-            {
-                Id: "builderman",
+        // Add default i
+        if (RunService.IsStudio() && !RunService.IsRunning()) {
+            items.push({
+                Id: "builderman0",
+                Name: "Builderman",
+                Description: "A powerful builder.",
+                Price: 1,
+                IsStackable: false,
+                IsConsumable: false,
+                Count: 1,
+                Type: "tower",
+                Icon: getTowerAsset("builderman"),
+                Rarity: "Exotic",
+                DMG: 10,
+                Range: 15,
+                FireRate: 1,
+                RangeType: "Full",
+                Buffs: ["Burn", "Turbo"],
+            });
+            items.push({
+                Id: "builderman1",
+                Name: "Builderman",
+                Description: "A powerful builder.",
+                Price: 10,
+                IsStackable: false,
+                IsConsumable: false,
+                Count: 1,
+                Type: "tower",
+                Icon: getTowerAsset("builderman"),
+                Rarity: "Uncommon",
+                DMG: 10,
+                Range: 15,
+                FireRate: 1,
+                RangeType: "Full",
+                Buffs: ["Burn", "Turbo"],
+            });
+            items.push({
+                Id: "builderman2",
                 Name: "Builderman",
                 Description: "A powerful builder.",
                 Price: 100,
@@ -78,13 +115,65 @@ export class ItemRegistry {
                 Count: 1,
                 Type: "tower",
                 Icon: getTowerAsset("builderman"),
-                Rarity: "Common",
+                Rarity: "Rare",
+                DMG: 100,
+                Range: 15,
+                FireRate: 1,
+                RangeType: "Full",
+                Buffs: ["Burn", "Turbo"],
+            });
+            items.push({
+                Id: "builderman3",
+                Name: "Builderman",
+                Description: "A powerful builder.",
+                Price: 150,
+                IsStackable: false,
+                IsConsumable: false,
+                Count: 1,
+                Type: "tower",
+                Icon: getTowerAsset("builderman"),
+                Rarity: "Epic",
                 DMG: 10,
                 Range: 15,
                 FireRate: 1,
                 RangeType: "Full",
-            },
-        ];
+                Buffs: ["Burn", "Turbo"],
+            });
+            items.push({
+                Id: "builderman4",
+                Name: "Builderman",
+                Description: "A powerful builder.",
+                Price: 250,
+                IsStackable: false,
+                IsConsumable: false,
+                Count: 1,
+                Type: "tower",
+                Icon: getTowerAsset("builderman"),
+                Rarity: "Legendary",
+                DMG: 10,
+                Range: 15,
+                FireRate: 1,
+                RangeType: "Full",
+                Buffs: ["Burn", "Turbo"],
+            });
+            items.push({
+                Id: "builderman5",
+                Name: "Builderman",
+                Description: "A powerful builder.",
+                Price: 5000,
+                IsStackable: false,
+                IsConsumable: false,
+                Count: 1,
+                Type: "tower",
+                Icon: getTowerAsset("builderman"),
+                Rarity: "Mythic",
+                DMG: 10,
+                Range: 15,
+                FireRate: 1,
+                RangeType: "Full",
+                Buffs: ["Burn", "Turbo"],
+            });
+        }
 
         items.forEach((item) => ItemRegistry.registerItem(item));
     }
