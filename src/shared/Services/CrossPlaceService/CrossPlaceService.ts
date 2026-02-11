@@ -1,3 +1,6 @@
+import { Map } from "../RegistryService/MapRegistry";
+
 export type TeleportData = {
-    Location?: string;
+    Location?: Map;
+    Host?: number;
 };

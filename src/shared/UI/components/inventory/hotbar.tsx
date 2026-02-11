@@ -19,7 +19,6 @@ export default function Hotbar({ storyBookControls }: props) {
 
     useEffect(() => {
         if (!RunService.IsRunning()) {
-            print(STUDIO_HOTBAR);
             setHotbarData(STUDIO_HOTBAR);
             return; // Make it so that storybooks don't break
         }

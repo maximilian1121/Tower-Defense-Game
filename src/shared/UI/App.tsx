@@ -8,6 +8,7 @@ import {
     ReplicatedStorage,
     RunService,
 } from "@rbxts/services";
+import CrossPlaceServiceClient from "shared/Services/CrossPlaceService/CrossPlaceServiceClient";
 
 type props = {
     storyBookControls: AppStoryControls;
@@ -51,7 +52,9 @@ export default function App({ storyBookControls }: props) {
                 <>
                     <imagelabel
                         Size={FULL_SIZE}
-                        Image={"rbxassetid://8508980527"}
+                        Image={
+                            CrossPlaceServiceClient.GetCurrentLocation()?.Icon
+                        }
                     />
                     <frame
                         Size={UDim2.fromScale(1, 1)}

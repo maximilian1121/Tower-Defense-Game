@@ -4,6 +4,7 @@ import { PROFILE_TEMPLATE } from "shared/helper";
 import { Networking } from "shared/Services/NetworkingService/NetworkingService";
 import { DataServiceServer } from "./Services/DataService/DataServiceServer";
 import RegistryService from "shared/Services/RegistryService/RegistryService";
+import CrossPlaceServiceServer from "./Services/CrossPlaceServiceServer/CrossPlaceServiceServer";
 
 function getStoreName(): string {
     return RunService.IsStudio() ? "PlayerStoreDev" : "PlayerStore";
@@ -12,6 +13,7 @@ function getStoreName(): string {
 Networking.Init();
 RegistryService.RegisterAll();
 DataServiceServer.Init();
+CrossPlaceServiceServer.Init();
 
 const PlayerStore = ProfileStore.New(getStoreName(), PROFILE_TEMPLATE);
 
