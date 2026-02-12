@@ -9,6 +9,7 @@ import ItemRegistry, {
     TowerItem,
 } from "shared/Services/RegistryService/ItemRegistry";
 import WorldContextService from "shared/Services/WorldContextService/WorldContextService";
+import { GameStateServiceClient } from "shared/Services/GameStateService/GameStateService";
 
 const paddingUDim8 = new UDim(0, 8);
 
@@ -47,6 +48,8 @@ export default function Hotbar({ storyBookControls, openUnitsToTower }: props) {
                 openUnitsToTower(tower as TowerItem);
             }
             return;
+        } else {
+            GameStateServiceClient.SetCurrentlyPlacingTower(hotbarData[slot]);
         }
     };
 
@@ -88,10 +91,7 @@ export default function Hotbar({ storyBookControls, openUnitsToTower }: props) {
                         key={e}
                         itemId={hotbarData?.[`slot${e}` as HotbarSlot]}
                         onPress={() => {
-                            const item = hotbarData?.[`slot${e}` as HotbarSlot];
-                            const itemInfo = ItemRegistry.getItem(item);
-                            if (itemInfo?.Type === "tower") {
-                            }
+                            handleItemPress(`slot${e}` as HotbarSlot);
                         }}
                         inHotbar={true}
                     />

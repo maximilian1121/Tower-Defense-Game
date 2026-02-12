@@ -23,8 +23,6 @@ export default function LevelBar({ storyBookControls }: props) {
         return () => conn.Disconnect();
     }, []);
 
-    print(storyBookControls);
-
     const { Level, Progression } = levelBarData ?? {
         Level: storyBookControls?.Level ?? 0,
         Progression: storyBookControls?.Progression ?? 0,

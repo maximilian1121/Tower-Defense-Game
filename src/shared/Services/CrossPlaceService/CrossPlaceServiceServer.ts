@@ -1,7 +1,8 @@
-import { Players } from "@rbxts/services";
+import { Players, RunService } from "@rbxts/services";
+import { TELEPORT_DATA_OVERRIDE } from "shared/devtools";
 import { TeleportData } from "shared/Services/CrossPlaceService/CrossPlaceService";
 import { NetworkDefinitions } from "shared/Services/NetworkingService/NetworkingService";
-import { Map } from "shared/Services/RegistryService/MapRegistry";
+import { Map } from "../RegistryService/MapRegistry";
 
 export default class CrossPlaceServiceServer {
     private static TeleportData?: TeleportData;
@@ -11,7 +12,7 @@ export default class CrossPlaceServiceServer {
     }
 
     public static Init() {
-        print("Initializing CrossPlaceService (SERVER)!");
+        print("Initializing CrossPlaceService (SERVER)");
 
         NetworkDefinitions.CrossPlaceService.GetCurrentLocation.OnServerInvoke =
             () => {
@@ -21,8 +22,15 @@ export default class CrossPlaceServiceServer {
         while (Players.GetPlayers().size() < 1) {
             task.wait();
         }
+        const firstPlayer = Players.GetPlayers()[0];
+
+        if (RunService.IsStudio() && TELEPORT_DATA_OVERRIDE !== undefined) {
+            this.TeleportData = TELEPORT_DATA_OVERRIDE; // Forge the teleport data
+            return;
+        }
+
         print("First player joined piggy backing off of their Teleport Data!");
-        const joinData = Players.GetPlayers()[0].GetJoinData();
+        const joinData = firstPlayer.GetJoinData();
         const teleportData = joinData?.TeleportData;
 
         if (teleportData !== undefined && typeIs(teleportData, "table")) {

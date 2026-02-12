@@ -1,7 +1,7 @@
 import { Map } from "./MapRegistry";
 
 export const devMap: Map = {
-    Id: "DEV",
+    Id: "devMap",
     Name: "DEV MAP",
     Icon: "rbxassetid://1169418192",
 };

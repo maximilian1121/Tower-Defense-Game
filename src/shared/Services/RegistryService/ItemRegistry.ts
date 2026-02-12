@@ -72,6 +72,8 @@ export class ItemRegistry {
     }
 
     public static registerItems() {
+        const side = RunService.IsClient() ? "CLIENT" : "SERVER";
+        print(`Initializing ${script.Parent?.Name} (${side})`);
         if (RunService.IsStudio()) {
             for (let i = 0; i < 6; i++) {
                 const newItem = table.clone(builderman);

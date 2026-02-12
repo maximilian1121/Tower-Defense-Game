@@ -59,6 +59,9 @@ export const Networking = {
     },
 };
 
+const side = RunService.IsClient() ? "CLIENT" : "SERVER";
+print(`Initializing ${script.Parent?.Name} (${side})`);
+
 export const NetworkDefinitions = {
     Inventory: {
         GetHotbar: Networking.Get("Inventory", "GetHotbar", "RemoteFunction"),

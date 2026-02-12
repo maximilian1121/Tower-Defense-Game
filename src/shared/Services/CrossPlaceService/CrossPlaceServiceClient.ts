@@ -16,6 +16,15 @@ export default class CrossPlaceServiceClient {
         if (!this.Initialized) {
             this.Initialized = true;
 
+            if (RunService.IsStudio()) {
+                const serverData: TeleportData | undefined =
+                    NetworkDefinitions.CrossPlaceService.GetCurrentLocation.InvokeServer();
+
+                if (serverData !== undefined) {
+                    this.TeleportData = serverData;
+                }
+            }
+
             const rawData = TeleportService.GetLocalPlayerTeleportData();
             if (rawData !== undefined && typeIs(rawData, "table")) {
                 this.TeleportData = rawData as TeleportData;

@@ -32,10 +32,8 @@ export class MapRegistry {
     }
 
     public static registerMaps() {
-        // Add default i
-        if (RunService.IsStudio() && !RunService.IsRunning()) {
-            // TODO
-        }
+        const side = RunService.IsClient() ? "CLIENT" : "SERVER";
+        print(`Initializing ${script.Parent?.Name} (${side})`);
 
         maps.forEach((map: Map) => MapRegistry.registerMap(map));
     }
