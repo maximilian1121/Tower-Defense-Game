@@ -3,6 +3,8 @@ import { DataServiceServer } from "./Services/DataService/DataServiceServer";
 import RegistryService from "shared/Services/RegistryService/RegistryService";
 import CrossPlaceServiceServer from "../shared/Services/CrossPlaceService/CrossPlaceServiceServer";
 import { ReplicatedStorage } from "@rbxts/services";
+import WorldContextService from "shared/Services/WorldContextService/WorldContextService";
+import MapService from "shared/Services/MapService/MapService";
 
 Networking.Init();
 DataServiceServer.Init();
@@ -17,4 +19,11 @@ ReplicatedStorage.GetDescendants().forEach((i) => {
 
 if (CrossPlaceServiceServer.GetCurrentMap() === undefined) {
     print("Lobby");
+} else {
+    WorldContextService.CreateLeaderstatsWithBaseMoney();
+    const map = CrossPlaceServiceServer.GetCurrentMap();
+    if (map) {
+        MapService.SetMap(map);
+        MapService.LoadMap();
+    }
 }

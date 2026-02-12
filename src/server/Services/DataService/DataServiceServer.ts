@@ -15,6 +15,16 @@ export class DataServiceServer {
         const PlayerStore = ProfileStore.New(getStoreName(), PROFILE_TEMPLATE);
 
         const PlayerAdded = (player: Player) => {
+            task.spawn(() => {
+                player.CharacterAdded.Connect((char) => {
+                    char.GetDescendants().forEach((dec) => {
+                        if (dec.IsA("BasePart")) {
+                            dec.CollisionGroup = "Player";
+                        }
+                    });
+                });
+            });
+
             const profile = PlayerStore.StartSessionAsync(`${player.UserId}`, {
                 Cancel: () => {
                     return player.Parent !== Players;

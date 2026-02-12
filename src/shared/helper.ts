@@ -125,3 +125,5 @@ export const addCommasToNumber = (value: number | string): string => {
 
     return str + decimal;
 };
+
+export const COINS_STAT_NAME = "Coins";

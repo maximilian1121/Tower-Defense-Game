@@ -28,7 +28,7 @@ export default class GameStateService {
     private static CanRun() {
         if (WorldContextService.IsLobby()) {
             if (!this.LoggedCanRunMessage) {
-                warn("Cannot run EnemyService on the lobby!");
+                warn(`Cannot run ${script.Parent?.Name} on the lobby!`);
                 this.LoggedCanRunMessage = true;
             }
             return false;
@@ -44,7 +44,7 @@ export class GameStateServiceClient {
     private static CanRun() {
         if (WorldContextService.IsLobby()) {
             if (!this.LoggedCanRunMessage) {
-                warn("Cannot run EnemyService on the lobby!");
+                warn(`Cannot run ${script.Parent?.Name} on the lobby!`);
                 this.LoggedCanRunMessage = true;
             }
             return false;

@@ -28,10 +28,13 @@
     "hide-files.files": ["node_modules", "include"],
     "cSpell.words": [
         "builderman",
+        "gsub",
         "Hotbar",
         "imagebutton",
         "imagelabel",
         "Keypoint",
+        "Leaderstats",
+        "Lerp",
         "levelbar",
         "Managment",
         "rbxasset",

@@ -25,7 +25,7 @@ export default function App({ storyBookControls }: props) {
     const [preloadPercent, setPreloadPercent] = useState(0);
 
     useEffect(() => {
-        if (!RunService.IsRunning()) {
+        if (RunService.IsStudio()) {
             setLoading(false);
             return;
         }

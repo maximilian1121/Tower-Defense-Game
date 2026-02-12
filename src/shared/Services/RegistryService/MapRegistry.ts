@@ -5,6 +5,7 @@ export interface Map {
     Id: string;
     Name: string;
     Icon: string;
+    StartMoney: number;
 }
 
 export class MapRegistry {

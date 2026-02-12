@@ -81,4 +81,5 @@ export const NetworkDefinitions = {
             "RemoteFunction",
         ),
     },
+    GetMap: Networking.Get(".", "GetMap", "RemoteFunction"),
 };

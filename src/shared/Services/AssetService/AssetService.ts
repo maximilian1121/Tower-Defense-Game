@@ -21,6 +21,10 @@ function getAsset(category: AssetCategory, name: string) {
         return AssetFolder.FindFirstChild("Sounds")?.FindFirstChild(
             name,
         ) as Model;
+    } else if (category === "map") {
+        return AssetFolder.FindFirstChild("Maps")?.FindFirstChild(name) as
+            | Model
+            | Folder;
     }
 }
 
@@ -28,7 +32,10 @@ export function getTowerAsset(name: string): Model {
     return getAsset("tower", name) as Model;
 }
 
-export function geMapAsset(name: string): Model {
+export function getMapAsset(
+    name: string | undefined,
+): Model | Folder | undefined {
+    if (name === undefined) return;
     return getAsset("map", name) as Model;
 }
 
