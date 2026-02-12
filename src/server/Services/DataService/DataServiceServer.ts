@@ -1,13 +1,54 @@
-import { Profile } from "@rbxts/profile-store";
-import { Players } from "@rbxts/services";
+import ProfileStore, { Profile } from "@rbxts/profile-store";
+import { Players, RunService } from "@rbxts/services";
 import { NetworkDefinitions } from "shared/Services/NetworkingService/NetworkingService";
 import { PROFILE_TEMPLATE, ProfileData } from "shared/helper";
+
+function getStoreName(): string {
+    return RunService.IsStudio() ? "PlayerStoreDev" : "PlayerStore";
+}
 
 export class DataServiceServer {
     public static Profiles: Record<number, Profile<ProfileData> | undefined> =
         {};
 
     public static Init = () => {
+        const PlayerStore = ProfileStore.New(getStoreName(), PROFILE_TEMPLATE);
+
+        const PlayerAdded = (player: Player) => {
+            const profile = PlayerStore.StartSessionAsync(`${player.UserId}`, {
+                Cancel: () => {
+                    return player.Parent !== Players;
+                },
+            });
+
+            if (profile !== undefined) {
+                profile.AddUserId(player.UserId);
+                profile.Reconcile();
+
+                profile.OnSessionEnd.Connect(() => {
+                    this.Profiles[player.UserId] = undefined;
+                    player.Kick("Data error occurred. Please rejoin.");
+                });
+
+                if (player.Parent === Players) {
+                    this.Profiles[player.UserId] = profile;
+                } else {
+                    profile.EndSession();
+                }
+            } else {
+                player.Kick("Data error occurred. Please rejoin.");
+            }
+        };
+
+        Players.PlayerAdded.Connect(PlayerAdded);
+
+        Players.PlayerRemoving.Connect((player: Player) => {
+            const profile = this.Profiles[player.UserId];
+            if (profile) {
+                profile.EndSession();
+            }
+        });
+
         NetworkDefinitions.Inventory.GetHotbar.OnServerInvoke = (
             player: Player,
         ) => {
@@ -45,10 +86,9 @@ export class DataServiceServer {
             const levelData = profile.Data.LevelData;
             levelData.Progression += amount;
 
-            while (levelData.Progression >= levelData.NextMilestone) {
+            while (levelData.Progression >= levelData.Level * 25) {
                 levelData.Level += 1;
-                levelData.Progression -= levelData.NextMilestone;
-                levelData.NextMilestone = levelData.Level * 25;
+                levelData.Progression -= levelData.Level * 25;
             }
 
             NetworkDefinitions.Stats.LevelDataChange.FireClient(

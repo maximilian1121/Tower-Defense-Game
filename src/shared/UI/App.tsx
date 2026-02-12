@@ -9,6 +9,7 @@ import {
     RunService,
 } from "@rbxts/services";
 import CrossPlaceServiceClient from "shared/Services/CrossPlaceService/CrossPlaceServiceClient";
+import ProgressBar from "./components/ProgressBar";
 
 type props = {
     storyBookControls: AppStoryControls;
@@ -21,7 +22,7 @@ export type AppStoryControls = {
 
 export default function App({ storyBookControls }: props) {
     const [loading, setLoading] = useState(true);
-    const [preloadText, setPreloadText] = useState("");
+    const [preloadPercent, setPreloadPercent] = useState(0);
 
     useEffect(() => {
         if (!RunService.IsRunning()) {
@@ -34,12 +35,14 @@ export default function App({ storyBookControls }: props) {
         const toLoad = ReplicatedStorage.GetDescendants();
 
         task.spawn(() => {
-            toLoad.forEach((asset: Instance) => {
-                setPreloadText(`Preloading ${asset.Name}`);
+            toLoad.forEach((asset: Instance, idx) => {
+                const total = toLoad.size();
+                setPreloadPercent((idx + 1) / total);
                 task.wait();
                 ContentProvider.PreloadAsync([asset]);
                 task.wait();
             });
+            task.wait(2.5);
             setLoading(false);
         });
     }, []);
@@ -63,6 +66,7 @@ export default function App({ storyBookControls }: props) {
                         <uilistlayout
                             HorizontalAlignment={"Center"}
                             VerticalAlignment={"Center"}
+                            Padding={new UDim(0, 8)}
                         />
                         <textlabel
                             Size={UDim2.fromScale(0, 0)}
@@ -88,7 +92,10 @@ export default function App({ storyBookControls }: props) {
                             AutomaticSize={"XY"}
                             AnchorPoint={new Vector2(0.5, 0.5)}
                             Position={UDim2.fromScale(0.5, 0.5)}
-                            Text={"Heading to lobby!"}
+                            Text={`Heading to ${
+                                CrossPlaceServiceClient.GetCurrentLocation()
+                                    ?.Name ?? "Lobby"
+                            }!`}
                             TextScaled={true}
                             FontFace={GetFont()}
                             TextColor3={new Color3(1, 1, 1)}
@@ -100,24 +107,11 @@ export default function App({ storyBookControls }: props) {
                             />
                             <uitextsizeconstraint MaxTextSize={48} />
                         </textlabel>
-                        <textlabel
-                            Size={UDim2.fromScale(0, 0)}
-                            BackgroundTransparency={1}
-                            AutomaticSize={"XY"}
-                            AnchorPoint={new Vector2(0.5, 0.5)}
-                            Position={UDim2.fromScale(0.5, 0.5)}
-                            Text={preloadText}
-                            TextScaled={true}
-                            FontFace={GetFont()}
-                            TextColor3={new Color3(1, 1, 1)}
-                        >
-                            <uistroke
-                                Thickness={0.1}
-                                StrokeSizingMode={"ScaledSize"}
-                                Color={new Color3(0.1, 0.1, 0.1)}
-                            />
-                            <uitextsizeconstraint MaxTextSize={32} />
-                        </textlabel>
+                        <ProgressBar
+                            text={`${math.round(preloadPercent * 100)}%`}
+                            value={preloadPercent}
+                            max={1}
+                        />
                     </frame>
                 </>
             )}

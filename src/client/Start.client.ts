@@ -12,6 +12,7 @@ RegistryService.RegisterAll();
 const GUI = new Instance("ScreenGui");
 GUI.Parent = playerGui;
 GUI.IgnoreGuiInset = true;
+GUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling;
 
 const root = ReactRoblox.createRoot(GUI);
 root.render(React.createElement(App));

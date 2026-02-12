@@ -5,7 +5,7 @@ import ItemRegistry, {
 import ToolTipBase from "./BaseToolTip";
 import React from "@rbxts/react";
 import { GetFont, WHITE } from "shared/UI/Constants";
-import Divider from "../shared/Divider";
+import Divider from "../Divider";
 import { getTextureAsset } from "shared/Services/AssetService/AssetService";
 import { generateGradientForRarity } from "shared/helper";
 import { RunService } from "@rbxts/services";
@@ -117,7 +117,6 @@ export default function HotbarTowerTooltip({
             <Stat
                 icon={getTextureAsset("COINS") ?? ""}
                 value={towerInformation?.Price ?? 0}
-                colorRarity="Legendary"
             />
         </ToolTipBase>
     );

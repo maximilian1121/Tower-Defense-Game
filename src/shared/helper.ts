@@ -7,7 +7,6 @@ export type Hotbar = {
 export interface LevelData {
     Level: number;
     Progression: number;
-    NextMilestone: number; // LEVEL * 25
 }
 
 export interface ProfileData {
@@ -21,7 +20,6 @@ export interface ProfileData {
 export const LEVEL_DATA_TEMPLATE: LevelData = {
     Level: 1,
     Progression: 0,
-    NextMilestone: 1 * 25,
 };
 
 export const PROFILE_TEMPLATE: ProfileData = {
@@ -61,8 +59,8 @@ import { Item } from "shared/Services/RegistryService/ItemRegistry";
 
 export const rarityColors: Record<Item["Rarity"], Color3> = {
     Common: new Color3(0.67, 0.67, 0.67),
-    Uncommon: new Color3(0.12, 1, 0.12),
-    Rare: new Color3(0.12, 0.75, 1),
+    Uncommon: new Color3(0.25, 1, 0.25),
+    Rare: new Color3(0.04, 0.73, 1),
     Epic: new Color3(0.75, 0.12, 1),
     Legendary: new Color3(1, 0.53, 0),
     Mythic: new Color3(1, 0.97, 0.12),

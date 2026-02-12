@@ -1,8 +1,8 @@
 import React from "@rbxts/react";
 import ReactRoblox from "@rbxts/react-roblox";
-import ToolTipBase from "./components/tooltips/BaseToolTip";
-import { FULL_SIZE } from "./Constants";
-import HotbarTowerTooltip from "./components/tooltips/HotbarTowerTooltip";
+import ToolTipBase from "../components/tooltips/BaseToolTip";
+import { FULL_SIZE } from "../Constants";
+import HotbarTowerTooltip from "../components/tooltips/HotbarTowerTooltip";
 import RegistryService from "shared/Services/RegistryService/RegistryService";
 
 RegistryService.RegisterAll();

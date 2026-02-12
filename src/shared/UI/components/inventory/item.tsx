@@ -226,6 +226,10 @@ export default function Item({ itemId, onPress, inHotbar }: Props) {
 
     const styles = useSpring({
         size: inHotbar ? getSizeForState() : UDim2.fromScale(1, 1),
+        rotation:
+            guiState === Enum.GuiState.Hover || guiState === Enum.GuiState.Press
+                ? 2
+                : 0,
         config: getConfigForState(),
     });
 
@@ -249,6 +253,7 @@ export default function Item({ itemId, onPress, inHotbar }: Props) {
         >
             <uiaspectratioconstraint />
             <imagelabel
+                Rotation={styles.rotation}
                 Size={FULL_SIZE}
                 BackgroundColor3={new Color3(0.24, 0.24, 0.24)}
                 Image={STUDS}
@@ -307,11 +312,12 @@ export default function Item({ itemId, onPress, inHotbar }: Props) {
             {inHotbar && (
                 <imagelabel
                     Image={getTextureAsset("GLOW_BLUR")}
-                    Size={UDim2.fromScale(1.4, 1.4)}
+                    Size={UDim2.fromScale(1.3, 1.3)}
                     BackgroundTransparency={1}
                     ZIndex={-1}
                     AnchorPoint={new Vector2(0.5, 0.5)}
                     Position={UDim2.fromScale(0.5, 0.5)}
+                    Rotation={styles.rotation}
                 >
                     <uigradient
                         Color={generateGradientForRarity(

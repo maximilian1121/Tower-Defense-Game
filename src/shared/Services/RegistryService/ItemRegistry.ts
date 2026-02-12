@@ -1,15 +1,17 @@
 import { RunService } from "@rbxts/services";
-import { getTowerAsset } from "../AssetService/AssetService";
-import { items } from "./Items";
+import { builderman, items } from "./Items";
 
-export type Rarity =
-    | "Common"
-    | "Uncommon"
-    | "Rare"
-    | "Epic"
-    | "Legendary"
-    | "Mythic"
-    | "Exotic";
+export const rarities = [
+    "Common",
+    "Uncommon",
+    "Rare",
+    "Epic",
+    "Legendary",
+    "Mythic",
+    "Exotic",
+];
+
+export type Rarity = (typeof rarities)[number];
 
 export type Buff = "Turbo" | "Burn";
 
@@ -55,8 +57,9 @@ export class ItemRegistry {
     }
 
     public static getItem(
-        id: string,
+        id?: string | undefined,
     ): Item | TowerItem | CrateItem | undefined {
+        if (id === undefined) return undefined;
         return this.items.get(id);
     }
 
@@ -69,110 +72,15 @@ export class ItemRegistry {
     }
 
     public static registerItems() {
-        // Add default i
-        if (RunService.IsStudio() && !RunService.IsRunning()) {
-            items.push({
-                Id: "builderman0",
-                Name: "Builderman",
-                Description: "A powerful builder.",
-                Price: 1,
-                IsStackable: false,
-                IsConsumable: false,
-                Count: 1,
-                Type: "tower",
-                Icon: getTowerAsset("builderman"),
-                Rarity: "Exotic",
-                DMG: 10,
-                Range: 15,
-                FireRate: 1,
-                RangeType: "Full",
-                Buffs: ["Burn", "Turbo"],
-            });
-            items.push({
-                Id: "builderman1",
-                Name: "Builderman",
-                Description: "A powerful builder.",
-                Price: 10,
-                IsStackable: false,
-                IsConsumable: false,
-                Count: 1,
-                Type: "tower",
-                Icon: getTowerAsset("builderman"),
-                Rarity: "Uncommon",
-                DMG: 10,
-                Range: 15,
-                FireRate: 1,
-                RangeType: "Full",
-                Buffs: ["Burn", "Turbo"],
-            });
-            items.push({
-                Id: "builderman2",
-                Name: "Builderman",
-                Description: "A powerful builder.",
-                Price: 100,
-                IsStackable: false,
-                IsConsumable: false,
-                Count: 1,
-                Type: "tower",
-                Icon: getTowerAsset("builderman"),
-                Rarity: "Rare",
-                DMG: 100,
-                Range: 15,
-                FireRate: 1,
-                RangeType: "Full",
-                Buffs: ["Burn", "Turbo"],
-            });
-            items.push({
-                Id: "builderman3",
-                Name: "Builderman",
-                Description: "A powerful builder.",
-                Price: 150,
-                IsStackable: false,
-                IsConsumable: false,
-                Count: 1,
-                Type: "tower",
-                Icon: getTowerAsset("builderman"),
-                Rarity: "Epic",
-                DMG: 10,
-                Range: 15,
-                FireRate: 1,
-                RangeType: "Full",
-                Buffs: ["Burn", "Turbo"],
-            });
-            items.push({
-                Id: "builderman4",
-                Name: "Builderman",
-                Description: "A powerful builder.",
-                Price: 250,
-                IsStackable: false,
-                IsConsumable: false,
-                Count: 1,
-                Type: "tower",
-                Icon: getTowerAsset("builderman"),
-                Rarity: "Legendary",
-                DMG: 10,
-                Range: 15,
-                FireRate: 1,
-                RangeType: "Full",
-                Buffs: ["Burn", "Turbo"],
-            });
-            items.push({
-                Id: "builderman5",
-                Name: "Builderman",
-                Description: "A powerful builder.",
-                Price: 5000,
-                IsStackable: false,
-                IsConsumable: false,
-                Count: 1,
-                Type: "tower",
-                Icon: getTowerAsset("builderman"),
-                Rarity: "Mythic",
-                DMG: 10,
-                Range: 15,
-                FireRate: 1,
-                RangeType: "Full",
-                Buffs: ["Burn", "Turbo"],
-            });
+        if (RunService.IsStudio()) {
+            for (let i = 0; i < 6; i++) {
+                const newItem = table.clone(builderman);
+                newItem.Id = `builderman${i}`;
+                newItem.Name = `Builderman ${i + 1}`;
+                newItem.Price = i + 1;
+                newItem.Rarity = rarities[i];
+                items.push(newItem);
+            }
         }
 
         items.forEach((item) => ItemRegistry.registerItem(item));

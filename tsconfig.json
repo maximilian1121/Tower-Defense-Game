@@ -16,6 +16,7 @@
         "strict": true,
         "target": "ESNext",
         "typeRoots": ["node_modules/@rbxts"],
+        "skipLibCheck": true,
 
         // configurable
         "rootDir": "src",
@@ -25,5 +26,5 @@
         "declaration": true,
         "baseUrl": "src"
     },
-    "exclude": ["node_modules", "dist", "**/*.spec.ts", "include", "out"]
+    "exclude": ["node_modules", "dist", "**/*.spec.ts", "include", "**/out"]
 }

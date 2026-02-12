@@ -1,16 +1,13 @@
 import React from "@rbxts/react";
-import { darkenColor3, rarityColors } from "shared/helper";
-import { Rarity } from "shared/Services/RegistryService/ItemRegistry";
-import { FULL_SIZE, GetFont } from "shared/UI/Constants";
+import { FULL_SIZE, GetFont, WHITE } from "shared/UI/Constants";
 
 type StatProps = {
     icon: string;
     name?: string;
     value: string | number;
-    colorRarity?: Rarity;
 };
 
-export function Stat({ icon, name, value, colorRarity }: StatProps) {
+export function Stat({ icon, name, value }: StatProps) {
     return (
         <frame Size={UDim2.fromScale(1, 1)} BackgroundTransparency={1}>
             <uilistlayout
@@ -32,20 +29,13 @@ export function Stat({ icon, name, value, colorRarity }: StatProps) {
                 TextScaled={true}
                 BackgroundTransparency={1}
                 FontFace={GetFont()}
-                TextColor3={
-                    (colorRarity && rarityColors[colorRarity]) ??
-                    new Color3(1, 1, 1)
-                }
+                TextColor3={WHITE}
                 TextXAlignment={"Left"}
             >
                 <uitextsizeconstraint MaxTextSize={32} />
                 <uistroke
                     Thickness={3}
-                    Color={
-                        (colorRarity &&
-                            darkenColor3(rarityColors[colorRarity], 0.5)) ??
-                        new Color3(0.27, 0.27, 0.27)
-                    }
+                    Color={new Color3(0.27, 0.27, 0.27)}
                     BorderStrokePosition={"Center"}
                 />
                 <uiflexitem FlexMode={"Fill"} />
