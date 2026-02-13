@@ -81,5 +81,16 @@ export const NetworkDefinitions = {
             "RemoteFunction",
         ),
     },
-    GetMap: Networking.Get(".", "GetMap", "RemoteFunction"),
+    InGame: {
+        GetCurrentGameState: Networking.Get(
+            "InGame",
+            "GetCurrentGameState",
+            "RemoteFunction",
+        ),
+        OnGameStateChange: Networking.Get(
+            "InGame",
+            "OnGameStateChange",
+            "RemoteEvent",
+        ),
+    },
 };

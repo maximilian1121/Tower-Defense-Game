@@ -127,3 +127,48 @@ export const addCommasToNumber = (value: number | string): string => {
 };
 
 export const COINS_STAT_NAME = "Coins";
+
+export function subdividePath(
+    points: Vector3[],
+    subdivisions: number,
+): Vector3[] {
+    if (points.size() < 2) return points;
+
+    const result: Vector3[] = [];
+
+    const getPoint = (i: number) => {
+        if (i < 0) return points[0];
+        if (i >= points.size()) return points[points.size() - 1];
+        return points[i];
+    };
+
+    for (let i = 0; i < points.size() - 1; i++) {
+        const p0 = getPoint(i - 1);
+        const p1 = getPoint(i);
+        const p2 = getPoint(i + 1);
+        const p3 = getPoint(i + 2);
+
+        for (let j = 0; j < subdivisions; j++) {
+            const t = j / subdivisions;
+            const t2 = t * t;
+            const t3 = t2 * t;
+
+            const position = p1
+                .mul(2)
+                .add(p2.sub(p0).mul(t))
+                .add(p0.mul(2).sub(p1.mul(5)).add(p2.mul(4)).sub(p3).mul(t2))
+                .add(
+                    p3
+                        .sub(p0)
+                        .add(p1.mul(3).sub(p2.mul(3)))
+                        .mul(t3),
+                )
+                .mul(0.5);
+
+            result.push(position);
+        }
+    }
+
+    result.push(points[points.size() - 1]);
+    return result;
+}

@@ -4,6 +4,7 @@ import {
     CollectionService,
     HttpService,
     Players,
+    ReplicatedStorage,
     RunService,
     Workspace,
 } from "@rbxts/services";
@@ -19,11 +20,19 @@ import RangeCircle from "shared/UI/components/tower/rangeCircle";
 import PlacementService from "shared/Services/PlacementService/PlacementService";
 import { FULL_SIZE, WHITE } from "shared/UI/Constants";
 import { generateGradientForRarity } from "shared/helper";
+import WorldContextService from "shared/Services/WorldContextService/WorldContextService";
 
 const player = Players.LocalPlayer;
 const playerGui = player.WaitForChild("PlayerGui") as PlayerGui;
 
 RegistryService.RegisterAll();
+
+if (!WorldContextService.IsLobby()) {
+    const context = ReplicatedStorage.FindFirstChild("InGame") as InputContext;
+    if (context) {
+        context.Enabled = true;
+    }
+}
 
 const GUI = new Instance("ScreenGui");
 GUI.Parent = playerGui;
@@ -109,20 +118,20 @@ const RangeCircleWrapper = () => {
                 placeholderTower.Name = HttpService.GenerateGUID(false);
 
                 placeholderCirclePart.Size = new Vector3(
-                    towerData.Range / 2,
+                    towerData.Range * 2,
                     0.01,
-                    towerData.Range / 2,
+                    towerData.Range * 2,
                 );
                 placeholderCirclePart.Parent = Workspace;
                 const asset = getTowerAsset(towerData.Id);
                 const size = asset.GetExtentsSize();
 
-                const diameter = math.max(size.X + 0.5, size.Z + 0.5);
+                const diameter = math.max(size.X + 1, size.Z + 1);
 
                 setDetectRadScale(
                     UDim2.fromScale(
-                        diameter / (towerData.Range / 2),
-                        diameter / (towerData.Range / 2),
+                        diameter / (towerData.Range * 2),
+                        diameter / (towerData.Range * 2),
                     ),
                 );
 

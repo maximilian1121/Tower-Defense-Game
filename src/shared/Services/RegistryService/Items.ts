@@ -7,7 +7,6 @@ export const builderman: TowerItem = {
     Description: "A powerful builder.",
     Price: 100,
     IsStackable: false,
-    IsConsumable: false,
     Count: 1,
     Type: "tower",
     Icon: getTowerAsset("builderman"),

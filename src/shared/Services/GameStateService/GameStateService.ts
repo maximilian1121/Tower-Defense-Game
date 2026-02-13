@@ -1,5 +1,7 @@
+import { RunService } from "@rbxts/services";
 import ItemRegistry, { TowerItem } from "../RegistryService/ItemRegistry";
 import WorldContextService from "../WorldContextService/WorldContextService";
+import { NetworkDefinitions } from "../NetworkingService/NetworkingService";
 
 export type GameState =
     | undefined
@@ -33,6 +35,36 @@ export default class GameStateService {
             }
             return false;
         } else return true;
+    }
+
+    private static GameState: GameState = undefined;
+
+    public static OnGameStateChanged(callback: GameStateChangeCallback) {
+        if (!this.CanRun()) return;
+        if (RunService.IsClient()) {
+            NetworkDefinitions.InGame.OnGameStateChange.OnClientEvent.Connect(
+                callback,
+            );
+            return;
+        }
+        this.Listeners.push(callback);
+    }
+
+    public static GetGameState() {
+        if (!this.CanRun()) return;
+        if (RunService.IsClient()) {
+            return NetworkDefinitions.InGame.GetCurrentGameState.InvokeServer();
+        }
+        return this.GameState;
+    }
+
+    public static SetGameState(state: GameState) {
+        if (!this.CanRun()) return;
+        if (RunService.IsClient()) {
+            return;
+        }
+        this.GameState = state;
+        this.Listeners.forEach((listener) => listener(this.GameState));
     }
 }
 
@@ -87,6 +119,10 @@ export class GameStateServiceClient {
                 name: "placingTower",
                 tower: tower,
             });
+            this.Listeners.forEach((listener) => listener(this.LocalGameState));
+        } else {
+            this.PlacingTower = undefined;
+            this.SetLocalGameState(undefined);
             this.Listeners.forEach((listener) => listener(this.LocalGameState));
         }
     }

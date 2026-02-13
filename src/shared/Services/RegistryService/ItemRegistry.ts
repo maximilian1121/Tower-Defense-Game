@@ -8,6 +8,9 @@ export const rarities = [
     "Epic",
     "Legendary",
     "Mythic",
+    /**
+     * Has a rainbow effect so DO NOT USE THIS FOR COLOUR IT RETURNS BLACK
+     */
     "Exotic",
 ];
 
@@ -16,29 +19,79 @@ export type Rarity = (typeof rarities)[number];
 export type Buff = "Turbo" | "Burn";
 
 export interface ItemBase {
+    /**
+     * A unique identifier for the item.
+     */
     Id: string;
+    /**
+     * A NON unique display identifier for the item.
+     */
     Name: string;
+    /**
+     * A description of what the item is/does.
+     */
     Description: string;
-    Price: number;
+    /**
+     * Self explanatory.
+     */
     ArbitraryData?: unknown;
+    /**
+     * Does this item stack? Towers should never stack.
+     */
     IsStackable: boolean;
-    IsConsumable: boolean;
+    /**
+     * The amount of items the player has.
+     */
     Count: number;
+    /**
+     * The items rarity.
+     */
     Rarity: Rarity;
 }
 
 export type TowerItem = ItemBase & {
+    /**
+     * The type of item.
+     */
     Type: "tower";
+    /**
+     * The icon for the tower. (Usually the asset for it)
+     */
     Icon: Instance;
+    /**
+     * How much damage the tower does.
+     */
     DMG: number;
+    /**
+     * Radius of the towers range!
+     */
     Range: number;
+    /**
+     * How long in seconds it takes to recharge.
+     */
     FireRate: number;
+    /**
+     * What kind of range does this tower have?
+     */
     RangeType: "Line" | "Full";
+    /**
+     * What buffs does this tower have?
+     */
     Buffs?: Buff[];
+    /**
+     * How much does this tower cost in game. NOT SHOP!
+     */
+    Price: number;
 };
 
 export type CrateItem = ItemBase & {
+    /**
+     * The type of item.
+     */
     Type: "crate";
+    /**
+     * The icon of the crate.
+     */
     Icon: string;
 };
 

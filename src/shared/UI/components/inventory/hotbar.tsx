@@ -1,7 +1,7 @@
-import React, { useEffect } from "@rbxts/react";
+import React, { useEffect, useRef } from "@rbxts/react";
 import LevelBar from "./levelbar";
 import Item from "./item";
-import { RunService } from "@rbxts/services";
+import { ReplicatedStorage, RunService } from "@rbxts/services";
 import { AppStoryControls } from "shared/UI/App";
 import { EMPTY_HOTBAR, Hotbar, HotbarSlot, STUDIO_HOTBAR } from "shared/helper";
 import { DataServiceClient } from "shared/Services/DataService/DataServiceClient";
@@ -22,12 +22,52 @@ export default function Hotbar({ storyBookControls, openUnitsToTower }: props) {
     const [hotbarData, setHotbarData] = React.useState<Hotbar | undefined>(
         EMPTY_HOTBAR,
     );
+    const hotbarRef = useRef<Hotbar | undefined>(hotbarData);
+
+    const handleItemPress = (slot: HotbarSlot) => {
+        const currentHotbar = hotbarRef.current;
+        if (currentHotbar === undefined) {
+            if (WorldContextService.IsLobby()) {
+                return;
+            } else {
+                GameStateServiceClient.SetCurrentlyPlacingTower(undefined);
+            }
+            return;
+        }
+        if (WorldContextService.IsLobby()) {
+            const tower = ItemRegistry.getItem(currentHotbar[slot]);
+            if (openUnitsToTower !== undefined) {
+                openUnitsToTower(tower as TowerItem);
+            }
+            return;
+        } else {
+            GameStateServiceClient.SetCurrentlyPlacingTower(
+                currentHotbar[slot],
+            );
+        }
+    };
 
     useEffect(() => {
         if (!RunService.IsRunning()) {
             setHotbarData(STUDIO_HOTBAR);
             return; // Make it so that storybooks don't break
         }
+
+        const actions = (
+            ReplicatedStorage.FindFirstChild("InGame") as InputContext
+        ).GetChildren() as InputAction[];
+
+        actions.forEach((action) => {
+            const [index] = action.Name.find("Hotbar");
+
+            if (index !== undefined) {
+                const [slotName] = action.Name.gsub("Hotbar", "slot");
+                action.Pressed.Connect(() => {
+                    handleItemPress(slotName as HotbarSlot);
+                });
+            }
+        });
+
         const fetchHotbar = async () => {
             const data = await DataServiceClient.GetHotbar();
             setHotbarData(data);
@@ -38,20 +78,9 @@ export default function Hotbar({ storyBookControls, openUnitsToTower }: props) {
         return () => {};
     }, []);
 
-    const handleItemPress = (slot: HotbarSlot) => {
-        if (hotbarData === undefined) {
-            return;
-        }
-        if (WorldContextService.IsLobby()) {
-            const tower = ItemRegistry.getItem(hotbarData[slot]);
-            if (openUnitsToTower !== undefined) {
-                openUnitsToTower(tower as TowerItem);
-            }
-            return;
-        } else {
-            GameStateServiceClient.SetCurrentlyPlacingTower(hotbarData[slot]);
-        }
-    };
+    useEffect(() => {
+        hotbarRef.current = hotbarData;
+    }, [hotbarData]);
 
     const slots = [1, 2, 3, 4, 5, 6] as const;
 

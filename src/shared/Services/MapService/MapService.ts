@@ -3,6 +3,7 @@ import { Map } from "../RegistryService/MapRegistry";
 import WorldContextService from "../WorldContextService/WorldContextService";
 import { getMapAsset } from "../AssetService/AssetService";
 import PathGenerator from "../PathGeneratorService/PathGeneratorService";
+import { subdividePath } from "shared/helper";
 
 export default class MapService {
     private static selectedMap: Map | undefined;
@@ -50,7 +51,8 @@ export default class MapService {
                 return numA > numB;
             });
 
-            const path = points.map((p) => p.WorldPosition);
+            let path = points.map((p) => p.WorldPosition);
+            path = subdividePath(path, 4); // Important to make the path actually smooth
 
             this.PathGenerator.setPath(path);
             this.PathGenerator.generatePath();

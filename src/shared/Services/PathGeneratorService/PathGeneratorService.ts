@@ -1,7 +1,10 @@
-import { HttpService, Workspace } from "@rbxts/services";
+import { CollectionService, HttpService, Workspace } from "@rbxts/services";
+import { darkenColor3 } from "shared/helper";
 
 const foundationHeight = 0.25;
 const pathHeight = 0.15;
+const pathColour = new Color3(0.6, 0.6, 0.6);
+const foundationColour = darkenColor3(pathColour, 0.75);
 
 export default class PathGenerator {
     private pathParts: BasePart[];
@@ -36,6 +39,7 @@ export default class PathGenerator {
             .add(new Vector3(0, foundationHeight / 2, 0))
             .mul(CFrame.Angles(0, math.rad(90), math.rad(90)));
         foundation.Shape = Enum.PartType.Cylinder;
+        foundation.Color = foundationColour;
         this.pathParts.push(foundation);
 
         const foundationPath = new Instance("Part");
@@ -44,6 +48,7 @@ export default class PathGenerator {
             .add(new Vector3(0, foundationHeight + pathHeight / 2, 0))
             .mul(CFrame.Angles(0, math.rad(90), math.rad(90)));
         foundationPath.Shape = Enum.PartType.Cylinder;
+        foundationPath.Color = pathColour;
         this.pathParts.push(foundationPath);
     }
 
@@ -58,10 +63,12 @@ export default class PathGenerator {
         const foundation = new Instance("Part");
         foundation.Size = new Vector3(2.5, foundationHeight, distance);
         foundation.CFrame = lookCf.add(new Vector3(0, foundationHeight / 2, 0));
+        foundation.Color = foundationColour;
         this.pathParts.push(foundation);
 
         const foundationPath = new Instance("Part");
         foundationPath.Size = new Vector3(2.2, pathHeight, distance);
+        foundationPath.Color = pathColour;
         foundationPath.CFrame = lookCf.add(
             new Vector3(0, foundationHeight + pathHeight / 2, 0),
         );
@@ -93,6 +100,8 @@ export default class PathGenerator {
             this.pathParts.forEach((p) => {
                 p.Anchored = true;
                 p.Parent = this.container;
+                p.Material = Enum.Material.Concrete;
+                CollectionService.AddTag(p, "InvalidPlacement");
             });
             return;
         } else {
@@ -111,7 +120,9 @@ export default class PathGenerator {
                 Enum.CollisionFidelity.PreciseConvexDecomposition,
             );
             this.pathParts = [result];
+            CollectionService.AddTag(result, "InvalidPlacement");
             result.Parent = this.container;
+            result.Material = Enum.Material.Concrete;
         }
     }
 }
