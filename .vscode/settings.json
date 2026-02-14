@@ -55,7 +55,6 @@
     "luau-lsp.plugin.enabled": true,
     "typescript.validate.enable": true,
     "typescript.tsserver.experimental.enableProjectDiagnostics": true,
-    "workbench.iconTheme": "roblox-icons",
     "search.exclude": {
         "**/node_modules": true,
         "**/bower_components": true,

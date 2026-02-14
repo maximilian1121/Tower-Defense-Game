@@ -6,6 +6,7 @@ import {
     Players,
     ReplicatedStorage,
     RunService,
+    UserInputService,
     Workspace,
 } from "@rbxts/services";
 import App from "../shared/UI/App";
@@ -21,16 +22,19 @@ import PlacementService from "shared/Services/PlacementService/PlacementService"
 import { FULL_SIZE, WHITE } from "shared/UI/Constants";
 import { generateGradientForRarity } from "shared/helper";
 import WorldContextService from "shared/Services/WorldContextService/WorldContextService";
+import { NetworkDefinitions } from "shared/Services/NetworkingService/NetworkingService";
 
 const player = Players.LocalPlayer;
 const playerGui = player.WaitForChild("PlayerGui") as PlayerGui;
 
 RegistryService.RegisterAll();
 
+const inGameInputContext = ReplicatedStorage.FindFirstChild(
+    "InGame",
+) as InputContext;
 if (!WorldContextService.IsLobby()) {
-    const context = ReplicatedStorage.FindFirstChild("InGame") as InputContext;
-    if (context) {
-        context.Enabled = true;
+    if (inGameInputContext) {
+        inGameInputContext.Enabled = true;
     }
 }
 
@@ -94,6 +98,92 @@ const RangeCircleWrapper = () => {
             raycastParams.AddToFilter(addedPart);
         });
 
+        let placeConn = undefined;
+
+        if (inGameInputContext) {
+            if (inGameInputContext) {
+                const exitPlacementKey = inGameInputContext.FindFirstChild(
+                    "ExitBuilding",
+                ) as InputAction;
+
+                if (exitPlacementKey) {
+                    exitPlacementKey.Pressed.Connect(() => {
+                        if (
+                            GameStateServiceClient.GetLocalGameState()?.name ===
+                            "placingTower"
+                        ) {
+                            GameStateServiceClient.SetLocalGameState(undefined);
+                            GameStateServiceClient.PlacingTower = undefined;
+                        }
+                    });
+                }
+            }
+            placeConn = UserInputService.InputBegan.Connect((ip, gpe) => {
+                if (gpe) return;
+                if (
+                    ip.UserInputType !== Enum.UserInputType.MouseButton1 &&
+                    ip.KeyCode !== Enum.KeyCode.ButtonR2
+                )
+                    return;
+                if (
+                    GameStateServiceClient.GetLocalGameState()?.name ===
+                    "placingTower"
+                ) {
+                    const result = RaycastUtils.MouseRaycast(
+                        raycastParams,
+                        128,
+                    );
+                    if (result) {
+                        const placeResult:
+                            | { success: boolean; errorMessage: string }
+                            | undefined =
+                            NetworkDefinitions.InGame.PlaceTower.InvokeServer(
+                                GameStateServiceClient.GetLocalGameState()
+                                    ?.tower,
+                                result.Position,
+                            );
+
+                        if (placeResult) {
+                            if (placeResult.success === false) {
+                                const bindable =
+                                    ReplicatedStorage.FindFirstChild(
+                                        "EnqueueSnack",
+                                    ) as BindableEvent;
+
+                                if (bindable) {
+                                    bindable.Fire(placeResult.errorMessage, {
+                                        variant: "error",
+                                    });
+                                }
+                            } else {
+                                if (
+                                    !UserInputService.IsKeyDown(
+                                        Enum.KeyCode.LeftControl,
+                                    )
+                                ) {
+                                    GameStateServiceClient.SetLocalGameState(
+                                        undefined,
+                                    );
+                                    GameStateServiceClient.PlacingTower =
+                                        undefined;
+                                }
+                            }
+                        }
+                    } else {
+                        const bindable = ReplicatedStorage.FindFirstChild(
+                            "EnqueueSnack",
+                        ) as BindableEvent;
+
+                        if (bindable) {
+                            bindable.Fire("You cannot place that there!", {
+                                variant: "error",
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
         const conn = RunService.RenderStepped.Connect(() => {
             setRotation((os.clock() * 25) % 360);
             const state = GameStateServiceClient.GetLocalGameState();
@@ -155,14 +245,19 @@ const RangeCircleWrapper = () => {
                         player,
                         goal,
                         detectSphere,
-                    ),
+                    ).success,
                 );
             } else {
                 setValid(false);
             }
         });
 
-        return () => conn.Disconnect();
+        return () => {
+            conn.Disconnect();
+            if (placeConn) {
+                placeConn.Disconnect();
+            }
+        };
     }, []);
 
     return (

@@ -13,6 +13,7 @@ const story = {
     controls: {
         Level: Number(1, 1, undefined, 1, true, 25),
         Progression: Number(0, 0, undefined, 1, true, 1000),
+        PlacingTower: false,
     },
     story: (controls: StoryControls<AppStoryControls>) => {
         return <App storyBookControls={controls.controls} />;

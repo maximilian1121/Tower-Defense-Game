@@ -88,8 +88,21 @@ export class GameStateServiceClient {
     public static OnLocalGameStateChanged(
         callback: LocalGameStateChangeCallback,
     ) {
-        if (!this.CanRun()) return;
-        this.Listeners.push(callback);
+        if (!this.CanRun()) return { Disconnect: () => {} };
+
+        (this.Listeners as LocalGameStateChangeCallback[]).push(callback);
+
+        return {
+            Disconnect: () => {
+                const index = (
+                    this.Listeners as LocalGameStateChangeCallback[]
+                ).indexOf(callback);
+                if (index !== -1)
+                    (this.Listeners as LocalGameStateChangeCallback[]).remove(
+                        index,
+                    );
+            },
+        };
     }
 
     public static GetLocalGameState() {
@@ -119,11 +132,9 @@ export class GameStateServiceClient {
                 name: "placingTower",
                 tower: tower,
             });
-            this.Listeners.forEach((listener) => listener(this.LocalGameState));
         } else {
             this.PlacingTower = undefined;
             this.SetLocalGameState(undefined);
-            this.Listeners.forEach((listener) => listener(this.LocalGameState));
         }
     }
 }

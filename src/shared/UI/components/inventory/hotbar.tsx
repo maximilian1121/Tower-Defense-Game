@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "@rbxts/react";
+import React, { useEffect, useRef, useState } from "@rbxts/react";
 import LevelBar from "./levelbar";
 import Item from "./item";
 import { ReplicatedStorage, RunService } from "@rbxts/services";
@@ -9,7 +9,11 @@ import ItemRegistry, {
     TowerItem,
 } from "shared/Services/RegistryService/ItemRegistry";
 import WorldContextService from "shared/Services/WorldContextService/WorldContextService";
-import { GameStateServiceClient } from "shared/Services/GameStateService/GameStateService";
+import {
+    GameStateServiceClient,
+    LocalGameState,
+} from "shared/Services/GameStateService/GameStateService";
+import Control from "../control";
 
 const paddingUDim8 = new UDim(0, 8);
 
@@ -23,6 +27,9 @@ export default function Hotbar({ storyBookControls, openUnitsToTower }: props) {
         EMPTY_HOTBAR,
     );
     const hotbarRef = useRef<Hotbar | undefined>(hotbarData);
+    const [localGameState, setLocalGameState] = useState<
+        LocalGameState | undefined
+    >(undefined);
 
     const handleItemPress = (slot: HotbarSlot) => {
         const currentHotbar = hotbarRef.current;
@@ -75,7 +82,13 @@ export default function Hotbar({ storyBookControls, openUnitsToTower }: props) {
 
         fetchHotbar();
 
-        return () => {};
+        const conn = GameStateServiceClient.OnLocalGameStateChanged((state) => {
+            setLocalGameState(state);
+        });
+
+        return () => {
+            conn.Disconnect();
+        };
     }, []);
 
     useEffect(() => {
@@ -97,6 +110,31 @@ export default function Hotbar({ storyBookControls, openUnitsToTower }: props) {
                 HorizontalAlignment={Enum.HorizontalAlignment.Center}
                 Padding={new UDim(0, 12)}
             />
+            <frame
+                BackgroundTransparency={1}
+                Size={UDim2.fromScale(0.5, 0.075)}
+            >
+                {(localGameState?.name === "placingTower" ||
+                    (storyBookControls && storyBookControls.PlacingTower)) && (
+                    <>
+                        <uilistlayout
+                            FillDirection={"Horizontal"}
+                            Padding={new UDim(0, 32)}
+                            HorizontalAlignment={"Center"}
+                        />
+                        <Control
+                            input={Enum.UserInputType.MouseButton1}
+                            text="Place tower"
+                        />
+                        <Control input={Enum.KeyCode.E} text="Exit placing" />
+
+                        <Control
+                            input={Enum.KeyCode.LeftControl}
+                            text="Continue placing"
+                        />
+                    </>
+                )}
+            </frame>
             <frame
                 Size={UDim2.fromScale(0.5, 0.15)}
                 BackgroundTransparency={1}

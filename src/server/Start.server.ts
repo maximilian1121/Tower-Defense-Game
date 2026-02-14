@@ -5,11 +5,13 @@ import CrossPlaceServiceServer from "../shared/Services/CrossPlaceService/CrossP
 import { ReplicatedStorage } from "@rbxts/services";
 import WorldContextService from "shared/Services/WorldContextService/WorldContextService";
 import MapService from "shared/Services/MapService/MapService";
+import PlacementServiceServer from "./Services/PlacementService/PlacementService";
 
 Networking.Init();
 DataServiceServer.Init();
 RegistryService.RegisterAll();
 CrossPlaceServiceServer.Init();
+PlacementServiceServer.Init();
 
 ReplicatedStorage.GetDescendants().forEach((i) => {
     if (i.IsA("Sound")) {

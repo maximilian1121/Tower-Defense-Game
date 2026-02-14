@@ -92,5 +92,6 @@ export const NetworkDefinitions = {
             "OnGameStateChange",
             "RemoteEvent",
         ),
+        PlaceTower: Networking.Get("InGame", "PlaceTower", "RemoteFunction"),
     },
 };

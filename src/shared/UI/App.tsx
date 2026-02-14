@@ -18,6 +18,7 @@ type props = {
 export type AppStoryControls = {
     Level: number;
     Progression: 0;
+    PlacingTower: boolean;
 };
 
 export default function App({ storyBookControls }: props) {

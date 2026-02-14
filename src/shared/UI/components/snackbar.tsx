@@ -7,7 +7,8 @@ import React, {
     useEffect,
     useBinding,
 } from "@rbxts/react";
-import { TweenService } from "@rbxts/services";
+import { ReplicatedStorage, TweenService } from "@rbxts/services";
+import { getSoundAsset } from "shared/Services/AssetService/AssetService";
 import { FULL_SIZE, GetFont, WHITE } from "shared/UI/Constants";
 
 const MAX_SNACKS = 4;
@@ -156,9 +157,37 @@ export default function SnackbarProvider({ children }: PropsWithChildren) {
                         : [...prev];
                 return [...newQueue, { id, message, ...options }];
             });
+
+            if (options.variant === "warning" || options.variant === "error") {
+                getSoundAsset("GUI_WARN")?.PlayGlobal();
+            } else {
+                getSoundAsset("GUI_INFO")?.PlayGlobal();
+            }
         },
         [],
     );
+
+    useEffect(() => {
+        let bindable = ReplicatedStorage.FindFirstChild("EnqueueSnack") as
+            | BindableEvent
+            | undefined;
+
+        if (!bindable) {
+            bindable = new Instance("BindableEvent");
+            bindable.Name = "EnqueueSnack";
+            bindable.Parent = ReplicatedStorage;
+        }
+
+        const connection = bindable.Event.Connect(
+            (message: string, options?: SnackbarOptions) => {
+                enqueueSnackbar(message, options ?? {});
+            },
+        );
+
+        return () => {
+            connection.Disconnect();
+        };
+    }, [enqueueSnackbar]);
 
     return (
         <SnackbarContext.Provider value={enqueueSnackbar}>

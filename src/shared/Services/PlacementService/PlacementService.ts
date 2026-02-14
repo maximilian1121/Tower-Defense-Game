@@ -21,24 +21,32 @@ export default class PlacementService {
         player: Player,
         cf: CFrame,
         detectPart: Part,
-    ): boolean {
+    ): { success: boolean; errorMessage: string } {
         const leaderStats = player.FindFirstChild("leaderstats");
         const moneyStat = leaderStats?.FindFirstChild(
             COINS_STAT_NAME,
         ) as IntValue;
         if (moneyStat) {
             const playerMoney = moneyStat.Value;
-            if (playerMoney < tower.Price) return false;
-        } else return false;
+            if (playerMoney < tower.Price)
+                return {
+                    success: false,
+                    errorMessage: `Not enough ${COINS_STAT_NAME}. Need ${tower.Price - playerMoney} more ${COINS_STAT_NAME}!`,
+                };
+        } else
+            return {
+                success: false,
+                errorMessage: `Not enough ${COINS_STAT_NAME}`,
+            };
 
         const partsInBounds = Workspace.GetPartsInPart(
             detectPart,
             overlapParams,
         );
         if (partsInBounds.size() <= 0) {
-            return true;
+            return { success: true, errorMessage: "" };
         }
 
-        return false;
+        return { success: false, errorMessage: "You cannot place that there!" };
     }
 }
